@@ -1,9 +1,9 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"vcs": {
+		"enabled": false,
 		"clientKind": "git",
-		"enabled": true,
-		"useIgnoreFile": true
+		"useIgnoreFile": false
 	},
 	"organizeImports": {
 		"enabled": true
@@ -18,8 +18,9 @@
 		"enabled": true,
 		"formatWithErrors": false,
 		"ignore": [],
-		"indentStyle": "tab",
+		"indentStyle": "space",
 		"lineEnding": "lf",
+		"attributePosition": "auto",
 		"lineWidth": 80
 	},
 	"javascript": {
