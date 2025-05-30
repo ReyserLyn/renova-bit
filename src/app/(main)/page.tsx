@@ -25,16 +25,16 @@ export default function Home() {
 					<SidebarTrigger className="md:hidden hover:cursor-pointer" />
 				</HeaderMiddle>
 
-				<div className="container flex items-center gap-3">
-					<InputSearch className="block md:hidden max-w-full py-1" />
+				<div className="container flex md:hidden items-center gap-3 ">
+					<InputSearch className=" max-w-full py-1" />
 					<Button asChild>
 						<Link href="/ofertas">Ofertas!</Link>
 					</Button>
 				</div>
 
-				<Separator className="my-3" />
+				<Separator className="container my-2" />
 				<Navbar className="hidden md:block" />
-				<Separator className="my-2 hidden md:block" />
+				<Separator className="container my-2 hidden md:block" />
 
 				<main className="container h-full">
 					<h1 className="hidden">RenovaBit</h1>
