@@ -131,7 +131,7 @@ const data = {
 					url: '#',
 				},
 				{
-					title: 'Microfonos',
+					title: 'Micrófonos',
 					url: '#',
 				},
 				{
