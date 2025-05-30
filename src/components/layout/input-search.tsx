@@ -6,8 +6,9 @@ import { useId } from 'react'
 
 export default function InputSearch({ className }: { className?: string }) {
 	const id = useId()
+
 	return (
-		<div className={cn('w-full px-4', className)}>
+		<div className={cn('w-full', className)}>
 			<div className="flex w-full rounded-md">
 				<SelectNative className="hidden md:block text-muted-foreground hover:text-foreground min-w-[120px] w-auto rounded-e-none rounded-s-md shadow-none border-e-0">
 					<option value="Categorías">Categorías</option>
@@ -25,6 +26,7 @@ export default function InputSearch({ className }: { className?: string }) {
 						className="w-full md:border-s-0 md:rounded-s-none rounded-e-md shadow-none focus-visible:z-10 ps-9 pe-9"
 						placeholder="Busca en toda la tienda..."
 						type="search"
+						autoFocus={false}
 					/>
 
 					<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
