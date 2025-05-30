@@ -44,3 +44,5 @@ next-env.d.ts
 ./supabase/
 
 # drizzle
+
+./src/app/ssr/
