@@ -11,11 +11,17 @@ import { FaCartShopping } from 'react-icons/fa6'
 import { Button } from '../ui/button'
 import InputSearch from './input-search'
 
-export default function HeaderMiddle() {
+export default function HeaderMiddle({
+	children,
+}: {
+	children: React.ReactNode
+}) {
 	return (
 		<nav className="py-5">
 			<div className="container">
 				<div className="flex items-center justify-between gap-4">
+					{children}
+
 					<Link href="/">
 						<h1 className="text-2xl font-bold">RenovaBit</h1>
 					</Link>
@@ -54,12 +60,7 @@ export default function HeaderMiddle() {
 							</SignedOut>
 
 							<SignedIn>
-								<Button
-									asChild
-									variant="ghost"
-									size="icon"
-									className="flex-shrink-0"
-								>
+								<Button asChild className="flex-shrink-0">
 									<UserButton
 										appearance={{
 											elements: {
@@ -74,7 +75,6 @@ export default function HeaderMiddle() {
 							</SignedIn>
 						</div>
 
-						{/* Carrito */}
 						<div className="flex-shrink-0">
 							<Link
 								href="/cart"
