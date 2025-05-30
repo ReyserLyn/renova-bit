@@ -1,6 +1,7 @@
 import { Mail } from 'lucide-react'
 import Link from 'next/link'
 import { FaFacebook, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa6'
+import { ToogleTheme } from '../ui/toogle-theme'
 
 export default function HeaderTop() {
 	return (
@@ -18,6 +19,8 @@ export default function HeaderTop() {
 						</div>
 					</div>
 					<div className="flex items-center gap-4">
+						<ToogleTheme />
+
 						<div className="flex items-center gap-2">
 							<span>Síguenos en:</span>
 							<Link href="https://www.facebook.com/renovabit" target="_blank">
