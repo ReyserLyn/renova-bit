@@ -15,22 +15,15 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
-import type { IconType } from 'react-icons/lib'
+import { textToSlug } from '@/lib/utils'
+import { ChevronRight } from 'lucide-react'
+
+import type { navMainItemType } from '@/lib/constants'
 
 export function SidebarNavMain({
 	items,
 }: {
-	items: {
-		title: string
-		url: string
-		icon?: LucideIcon | IconType
-		isActive?: boolean
-		items?: {
-			title: string
-			url: string
-		}[]
-	}[]
+	items: navMainItemType[]
 }) {
 	return (
 		<SidebarGroup>
@@ -56,7 +49,9 @@ export function SidebarNavMain({
 									{item.items?.map((subItem) => (
 										<SidebarMenuSubItem key={subItem.title}>
 											<SidebarMenuSubButton asChild>
-												<a href={subItem.url}>
+												<a
+													href={`${item.prefixUrl}/${textToSlug(subItem.title)}`}
+												>
 													<span>{subItem.title}</span>
 												</a>
 											</SidebarMenuSubButton>

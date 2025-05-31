@@ -1,7 +1,5 @@
 'use client'
 
-import type { LucideIcon } from 'lucide-react'
-
 import {
 	SidebarGroup,
 	SidebarGroupLabel,
@@ -9,24 +7,21 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import type { navSecondaryItemType } from '@/lib/constants'
 
 export function SidebarNavSecondary({
-	projects,
+	items,
 }: {
-	projects: {
-		name: string
-		url: string
-		icon: LucideIcon
-	}[]
+	items: navSecondaryItemType[]
 }) {
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
 			<SidebarGroupLabel>Opciones</SidebarGroupLabel>
 			<SidebarMenu>
-				{projects.map((item) => (
+				{items.map((item) => (
 					<SidebarMenuItem key={item.name}>
 						<SidebarMenuButton asChild>
-							<a href={item.url}>
+							<a href={`${item.url}`}>
 								<item.icon />
 								<span>{item.name}</span>
 							</a>
