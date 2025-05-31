@@ -50,7 +50,7 @@ export function SidebarNavMain({
 										<SidebarMenuSubItem key={subItem.title}>
 											<SidebarMenuSubButton asChild>
 												<a
-													href={`${item.prefixUrl}/${textToSlug(subItem.title)}`}
+													href={`${item.prefixUrl}/${subItem.url ? subItem.url : textToSlug(subItem.title)}`}
 												>
 													<span>{subItem.title}</span>
 												</a>

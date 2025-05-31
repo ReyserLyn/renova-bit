@@ -19,6 +19,7 @@ export type navMainItemType = {
 	isActive?: boolean
 	items?: {
 		title: string
+		url?: string
 	}[]
 }
 export type navSecondaryItemType = {
@@ -36,7 +37,7 @@ export const navOptions: NavOptionsType = {
 	navMain: [
 		{
 			title: 'Equipos',
-			prefixUrl: '/categorias',
+			prefixUrl: '/categoria',
 			icon: Computer,
 			items: [
 				{
@@ -70,7 +71,7 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			title: 'Componentes CPU',
-			prefixUrl: '/categorias',
+			prefixUrl: '/categoria',
 			icon: Microchip,
 			items: [
 				{
@@ -107,7 +108,7 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			title: 'Periféricos',
-			prefixUrl: '/categorias',
+			prefixUrl: '/categoria',
 			icon: Mouse,
 			items: [
 				{
@@ -135,7 +136,7 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			title: 'Productos',
-			prefixUrl: '/categorias',
+			prefixUrl: '/categoria',
 			icon: Box,
 			items: [
 				{
@@ -157,7 +158,7 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			title: 'Marcas',
-			prefixUrl: '/marcas',
+			prefixUrl: '/marca',
 			icon: TbBrandAmd,
 			items: [
 				{
@@ -236,14 +237,16 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			title: 'Laptops',
-			prefixUrl: '/laptops',
+			prefixUrl: '/categoria/laptops',
 			icon: Laptop,
 			items: [
 				{
 					title: 'Todas',
+					url: ' ',
 				},
 				{
 					title: 'Laptops Gamer',
+					url: 'gamer',
 				},
 				{
 					title: 'Ryzen 3 / Intel i3',
@@ -268,7 +271,7 @@ export const navOptions: NavOptionsType = {
 		},
 		{
 			name: 'Proformas / Ensambles',
-			url: '/proformas',
+			url: '/proforma',
 			icon: Box,
 		},
 		{

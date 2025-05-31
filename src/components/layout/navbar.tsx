@@ -32,7 +32,7 @@ export default function Navbar({ className }: { className?: string }) {
 													<ListItem
 														key={item.title}
 														title={item.title}
-														href={`/categorias/${textToSlug(item.title)}`}
+														href={`/categoria/${textToSlug(item.title)}`}
 													/>
 												))}
 											</ul>
@@ -53,7 +53,7 @@ export default function Navbar({ className }: { className?: string }) {
 											<ListItem
 												key={item.title}
 												title={item.title}
-												href={`/marcas/${textToSlug(item.title)}`}
+												href={`/marca/${textToSlug(item.title)}`}
 											/>
 										))}
 									</ul>
@@ -72,7 +72,7 @@ export default function Navbar({ className }: { className?: string }) {
 											<ListItem
 												key={item.title}
 												title={item.title}
-												href={`/laptops/${textToSlug(item.title)}`}
+												href={`/categoria/laptops/${item.url ? item.url : textToSlug(item.title)}`}
 											/>
 										))}
 									</ul>
@@ -87,7 +87,7 @@ export default function Navbar({ className }: { className?: string }) {
 						<NavigationMenuItem>
 							<NavigationMenuLink asChild>
 								<Button asChild className="hover:bg-green-200">
-									<Link href="/proformas">Proformas</Link>
+									<Link href="/proforma">Proformas</Link>
 								</Button>
 							</NavigationMenuLink>
 						</NavigationMenuItem>
