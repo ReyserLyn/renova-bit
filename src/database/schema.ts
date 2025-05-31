@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
 	check,
 	integer,
@@ -77,3 +77,14 @@ export const products = pgTable(
 		check('price_check', sql`${table.price} > 0`),
 	],
 ).enableRLS()
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+	products: many(products),
+}))
+
+export const productsRelations = relations(products, ({ one }) => ({
+	category: one(categories, {
+		fields: [products.category_id],
+		references: [categories.id],
+	}),
+}))
