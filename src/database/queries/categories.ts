@@ -10,6 +10,9 @@ export async function getCategoryBySlug(slug: string) {
 				orderBy: (products: { price: any }, { asc }: any) => [
 					asc(products.price),
 				],
+				with: {
+					brand: true,
+				},
 			},
 		},
 	})

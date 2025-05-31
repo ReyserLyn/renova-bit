@@ -87,4 +87,8 @@ export const productsRelations = relations(products, ({ one }) => ({
 		fields: [products.category_id],
 		references: [categories.id],
 	}),
+	brand: one(brands, {
+		fields: [products.brand_id],
+		references: [brands.id],
+	}),
 }))
