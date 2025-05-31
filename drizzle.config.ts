@@ -4,10 +4,16 @@ import type { Config } from 'drizzle-kit'
 dotenv.config({ path: '.env.local' })
 
 export default {
-	schema: './src/lib/db/schema.ts',
-	out: './drizzle/migrations',
+	out: './src/database/drizzle',
+	schema: './src/database/schema.ts',
 	dialect: 'postgresql',
 	dbCredentials: {
 		url: process.env.DATABASE_URL!,
 	},
+	strict: true,
+	verbose: true,
+	introspect: {
+		casing: 'preserve',
+	},
+	casing: 'snake_case',
 } satisfies Config
