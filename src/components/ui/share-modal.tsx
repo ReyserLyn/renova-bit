@@ -50,7 +50,7 @@ export function ShareModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="w-[96vw] max-w-[350px] mx-auto p-3 sm:p-4">
+			<DialogContent className="w-[96vw] max-w-full mx-auto p-3 sm:p-4">
 				<DialogHeader className="space-y-1 sm:space-y-2">
 					<DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
 						<Link className="h-4 w-4 sm:h-5 sm:w-5" />
