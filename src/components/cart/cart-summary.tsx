@@ -67,23 +67,23 @@ export function CartSummary() {
 	}
 
 	return (
-		<Card>
+		<Card className="w-full max-w-full">
 			<CardHeader>
-				<CardTitle className="flex items-center gap-2">
-					<ShoppingBag className="h-5 w-5" />
+				<CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+					<ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
 					Resumen del Pedido
 				</CardTitle>
 			</CardHeader>
 
-			<CardContent className="space-y-4">
+			<CardContent className="space-y-4 px-4 sm:px-6">
 				{/* Resumen de productos */}
 				<div className="space-y-2">
-					<div className="flex justify-between">
+					<div className="flex justify-between text-sm sm:text-base">
 						<span className="text-muted-foreground">
 							Subtotal ({itemCount} {itemCount === 1 ? 'producto' : 'productos'}
 							)
 						</span>
-						<span>S/{subtotal.toFixed(2)}</span>
+						<span className="font-medium">S/{subtotal.toFixed(2)}</span>
 					</div>
 
 					{/* Cupón de descuento */}
@@ -96,7 +96,7 @@ export function CartSummary() {
 								<Tag className="h-3 w-3" />
 								Cupón de descuento
 							</Label>
-							<div className="flex gap-2">
+							<div className="flex flex-col sm:flex-row gap-2">
 								<Input
 									id="coupon"
 									placeholder="Ingresa tu cupón"
@@ -104,12 +104,14 @@ export function CartSummary() {
 									onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
 									onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
 									disabled={isValidating}
+									className="flex-1 text-sm"
 								/>
 								<Button
 									variant="outline"
 									size="sm"
 									onClick={handleApplyCoupon}
 									disabled={isValidating || !couponInput.trim()}
+									className="w-full sm:w-auto"
 								>
 									{isValidating ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
@@ -120,13 +122,13 @@ export function CartSummary() {
 							</div>
 						</div>
 					) : (
-						<div className="flex justify-between items-center text-green-600">
+						<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-green-600 text-sm">
 							<span className="flex items-center gap-1">
 								<Tag className="h-3 w-3" />
 								Cupón {validatedCoupon.code} ({validatedCoupon.discount_percent}
 								% desc.)
 							</span>
-							<div className="flex items-center gap-2">
+							<div className="flex items-center justify-between sm:justify-end gap-2">
 								<span>-S/{discountAmount.toFixed(2)}</span>
 								<Button
 									variant="ghost"
@@ -151,31 +153,35 @@ export function CartSummary() {
 					<RadioGroup
 						value={selectedShipping}
 						onValueChange={setSelectedShipping}
+						className="space-y-2"
 					>
 						{shippingOptions.map((option) => (
-							<div key={option.id} className="flex items-start space-x-2 py-2">
+							<div
+								key={option.id}
+								className="flex items-start space-x-2 py-2 pr-2"
+							>
 								<RadioGroupItem
 									value={option.id}
 									id={option.id}
-									className="mt-1"
+									className="mt-1 flex-shrink-0"
 								/>
 								<Label
 									htmlFor={option.id}
-									className="flex-1 cursor-pointer space-y-1"
+									className="flex-1 cursor-pointer space-y-1 min-w-0"
 								>
-									<div className="flex justify-between">
-										<span className="font-medium">{option.name}</span>
+									<div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+										<span className="font-medium text-sm">{option.name}</span>
 										<span
-											className={
+											className={`text-sm flex-shrink-0 ${
 												option.price === 0 ? 'text-green-600 font-semibold' : ''
-											}
+											}`}
 										>
 											{option.price === 0
 												? 'GRATIS'
 												: `S/${option.price.toFixed(2)}`}
 										</span>
 									</div>
-									<p className="text-xs text-muted-foreground">
+									<p className="text-xs text-muted-foreground pr-4">
 										{option.description}
 									</p>
 									{option.id === selectedShipping && (
@@ -212,19 +218,19 @@ export function CartSummary() {
 						</span>
 					</div>
 
-					<div className="flex justify-between text-lg font-bold">
+					<div className="flex justify-between text-base sm:text-lg font-bold">
 						<span>Total a pagar</span>
 						<span>S/{total.toFixed(2)}</span>
 					</div>
 
-					<p className="text-xs text-muted-foreground flex items-center gap-1">
-						<Info className="h-3 w-3" />
-						Todos los precios incluyen IGV
+					<p className="text-xs text-muted-foreground flex items-start gap-1">
+						<Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
+						<span>Todos los precios incluyen IGV</span>
 					</p>
 				</div>
 			</CardContent>
 
-			<CardFooter className="flex flex-col gap-2">
+			<CardFooter className="flex flex-col gap-2 px-4 sm:px-6">
 				<Button
 					className="w-full"
 					size="lg"
