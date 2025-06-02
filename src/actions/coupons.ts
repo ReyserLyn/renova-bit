@@ -1,9 +1,13 @@
 'use server'
 
-import { db } from '@/database'
-import { couponUsages, coupons } from '@/database/schema'
+import {
+	getActiveCoupons,
+	getCouponUsageByUser,
+	incrementCouponUsage,
+	insertCoupon,
+	insertCouponUsage,
+} from '@/database/queries/coupons'
 import bcrypt from 'bcryptjs'
-import { and, eq, gte, isNull, or, sql } from 'drizzle-orm'
 
 // Validar un código de cupón
 export async function validateCoupon(
@@ -16,12 +20,7 @@ export async function validateCoupon(
 		const normalizedCode = code.trim().toUpperCase()
 
 		// Buscar cupones activos
-		const activeCoupons = await db.query.coupons.findMany({
-			where: and(
-				eq(coupons.is_active, true),
-				or(isNull(coupons.valid_until), gte(coupons.valid_until, new Date())),
-			),
-		})
+		const activeCoupons = await getActiveCoupons()
 
 		// Buscar el cupón válido comparando con bcrypt
 		let validCoupon = null
@@ -72,12 +71,7 @@ export async function validateCoupon(
 
 		// Verificar si el usuario ya usó este cupón
 		if (userId) {
-			const existingUsage = await db.query.couponUsages.findFirst({
-				where: and(
-					eq(couponUsages.coupon_id, validCoupon.id),
-					eq(couponUsages.user_id, userId),
-				),
-			})
+			const existingUsage = await getCouponUsageByUser(validCoupon.id, userId)
 
 			if (existingUsage) {
 				return {
@@ -124,16 +118,10 @@ export async function registerCouponUsage(
 ) {
 	try {
 		// Incrementar contador de uso
-		await db
-			.update(coupons)
-			.set({
-				usage_count: sql`${coupons.usage_count} + 1`,
-				updated_at: new Date(),
-			})
-			.where(eq(coupons.id, couponId))
+		await incrementCouponUsage(couponId)
 
 		// Registrar uso por usuario
-		await db.insert(couponUsages).values({
+		await insertCouponUsage({
 			coupon_id: couponId,
 			user_id: userId,
 			order_id: orderId,
@@ -163,17 +151,14 @@ export async function createCoupon(
 		const codeHash = await bcrypt.hash(code.toUpperCase(), salt)
 
 		// Insertar cupón
-		const [newCoupon] = await db
-			.insert(coupons)
-			.values({
-				code_hash: codeHash,
-				discount_percent: discountPercent,
-				valid_until: options?.validUntil,
-				min_purchase: options?.minPurchase?.toString(),
-				max_discount: options?.maxDiscount?.toString(),
-				usage_limit: options?.usageLimit,
-			})
-			.returning()
+		const [newCoupon] = await insertCoupon({
+			code_hash: codeHash,
+			discount_percent: discountPercent,
+			valid_until: options?.validUntil,
+			min_purchase: options?.minPurchase?.toString(),
+			max_discount: options?.maxDiscount?.toString(),
+			usage_limit: options?.usageLimit,
+		})
 
 		return { success: true, coupon: newCoupon }
 	} catch (error) {

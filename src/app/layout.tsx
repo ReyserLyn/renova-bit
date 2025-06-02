@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeProvider } from '@/lib/providers/theme-provider'
 import { esES } from '@/lib/translation/es-ES'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
