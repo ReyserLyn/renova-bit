@@ -197,7 +197,7 @@ export function HeroSection() {
 												<Button
 													variant="outline"
 													size="lg"
-													className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+													className="border-white/60 bg-white/5 text-white hover:bg-white/20 hover:border-white/80 backdrop-blur-sm transition-all"
 													asChild
 												>
 													<Link href="/ofertas">Ver Ofertas</Link>
