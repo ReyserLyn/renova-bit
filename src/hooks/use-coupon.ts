@@ -4,7 +4,7 @@ import { validateCoupon } from '@/actions/coupons'
 import { useUser } from '@/hooks/use-user'
 import { useCartStore } from '@/lib/stores/cart-store'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
+import { toast } from 'react-hot-toast'
 
 export function useCoupon() {
 	const { user } = useUser()
@@ -31,7 +31,9 @@ export function useCoupon() {
 
 	const removeCoupon = () => {
 		useCartStore.getState().removeCoupon()
-		toast.info('Cupón removido')
+		toast('Cupón removido', {
+			icon: '🗑️',
+		})
 	}
 
 	return {

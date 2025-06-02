@@ -10,7 +10,7 @@ import type { CartItem } from '@/lib/stores/cart-store'
 import { useCartStore } from '@/lib/stores/cart-store'
 import { useMutation } from '@tanstack/react-query'
 import { useCallback, useRef } from 'react'
-import { toast } from 'sonner'
+import { toast } from 'react-hot-toast'
 
 export function useCart() {
 	const { user } = useUser()

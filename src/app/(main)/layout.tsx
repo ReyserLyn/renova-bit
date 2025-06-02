@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useCartSync } from '@/hooks/use-cart-sync'
 import Link from 'next/link'
-import { Toaster } from 'sonner'
+import { Toaster } from 'react-hot-toast'
 
 export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 	useCartSync()
@@ -42,12 +42,7 @@ export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 
 				{children}
 			</SidebarInset>
-			<Toaster
-				position="bottom-right"
-				richColors
-				expand={false}
-				duration={3000}
-			/>
+			<Toaster position="bottom-right" />
 		</SidebarProvider>
 	)
 }
