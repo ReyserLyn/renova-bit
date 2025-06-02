@@ -50,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
 					</span>
 
 					<Link href={`/producto/${product.slug}`} className="w-full">
-						<CardTitle className="text-[1rem] hover:text-amber-500 transition-all duration-300 text-base">
+						<CardTitle className="text-[1rem] hover:text-amber-500 transition-all duration-300 text-base line-clamp-3 min-h-[calc(1.5rem*3)] leading-normal">
 							{product.name}
 						</CardTitle>
 					</Link>
