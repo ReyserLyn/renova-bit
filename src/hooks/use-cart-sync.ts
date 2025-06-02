@@ -1,59 +1,70 @@
 'use client'
 
-import { getCartItemsFromDB } from '@/actions/cart'
-import { useUser } from '@/hooks/use-user'
+import { getCartItemsFromDB, syncCartWithDB } from '@/actions/cart'
 import { useCartStore } from '@/lib/stores/cart-store'
 import { useEffect, useRef } from 'react'
+import { useUser } from './use-user'
 
-/**
- * Hook para sincronizar el carrito con la base de datos
- * Se sincroniza cuando el usuario inicia sesión
- */
 export function useCartSync() {
-	const { user, isLoaded } = useUser()
-	const { setItems, setLoading } = useCartStore()
-	const lastUserId = useRef<string | null>(null)
+	const { user } = useUser()
+	const { items, setItems, setLoading, setLastSyncedAt } = useCartStore()
+	const syncData = useRef({
+		inProgress: false,
+		lastSync: 0,
+		timeoutId: null as NodeJS.Timeout | null,
+	})
 
 	useEffect(() => {
-		// Solo proceder si el usuario está cargado
-		if (!isLoaded) {
+		if (!user || syncData.current.inProgress) {
 			return
 		}
+		const syncCart = async () => {
+			syncData.current.inProgress = true
+			setLoading(true)
 
-		// Si no hay usuario y no había usuario antes, no hacer nada
-		if (!user && !lastUserId.current) {
-			return
-		}
-
-		// Si el usuario cambió (de null a usuario o de un usuario a otro)
-		const userChanged = lastUserId.current !== (user?.id || null)
-
-		if (userChanged && user) {
-			// Usuario acaba de iniciar sesión o cambió de usuario
-			const loadCartFromDB = async () => {
-				setLoading(true)
-				try {
-					const dbItems = await getCartItemsFromDB(user.id)
-					if (dbItems.length > 0) {
-						setItems(dbItems)
-					} else {
-						// Si no hay items en la DB, limpiar el carrito local
-						setItems([])
+			try {
+				if (items.length > 0) {
+					const { success, items: dbItems } = await syncCartWithDB(
+						user.id,
+						items,
+					)
+					if (success && dbItems) {
+						if (JSON.stringify(items) !== JSON.stringify(dbItems)) {
+							setItems(dbItems)
+						}
 					}
-				} catch (error) {
-					console.error('Error cargando carrito:', error)
-				} finally {
-					setLoading(false)
+				} else {
+					const dbItems = await getCartItemsFromDB(user.id)
+					if (dbItems.length > 0) setItems(dbItems)
 				}
-			}
 
-			loadCartFromDB()
-		} else if (userChanged && !user) {
-			// Usuario cerró sesión, limpiar carrito
-			setItems([])
+				setLastSyncedAt(new Date().toISOString())
+				syncData.current.lastSync = Date.now()
+			} catch (error) {
+				console.error('Sync error:', error)
+			} finally {
+				setLoading(false)
+				syncData.current.inProgress = false
+			}
 		}
 
-		// Actualizar la referencia del último usuario
-		lastUserId.current = user?.id || null
-	}, [user?.id, isLoaded, setItems, setLoading])
+		if (!user || syncData.current.inProgress) return
+
+		const now = Date.now()
+		if (now - syncData.current.lastSync < 3000) {
+			syncData.current.timeoutId = setTimeout(
+				() => syncCart(), // Ahora syncCart está definida
+				3000 - (now - syncData.current.lastSync),
+			)
+			return
+		}
+
+		syncCart()
+
+		return () => {
+			if (syncData.current.timeoutId) {
+				clearTimeout(syncData.current.timeoutId)
+			}
+		}
+	}, [user?.id, items, setItems, setLoading, setLastSyncedAt])
 }

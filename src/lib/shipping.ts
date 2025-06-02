@@ -1,6 +1,3 @@
-/**
- * Opciones de envío disponibles
- */
 export type ShippingOption = {
 	id: string
 	name: string
@@ -10,9 +7,6 @@ export type ShippingOption = {
 	available: boolean
 }
 
-/**
- * Obtener las opciones de envío disponibles basadas en el día actual
- */
 export function getShippingOptions(): ShippingOption[] {
 	const today = new Date()
 	const dayOfWeek = today.getDay() // 0 = Domingo, 6 = Sábado
@@ -54,9 +48,6 @@ export function getShippingOptions(): ShippingOption[] {
 	return options
 }
 
-/**
- * Obtener el día de entrega estimado para una opción de envío
- */
 export function getEstimatedDeliveryDate(shippingId: string): Date {
 	const today = new Date()
 	const hour = today.getHours()
@@ -64,7 +55,7 @@ export function getEstimatedDeliveryDate(shippingId: string): Date {
 	switch (shippingId) {
 		case 'express': {
 			// Si es antes de las 2pm, entrega hoy. Si no, mañana
-			if (hour < 14) {
+			if (hour < 12) {
 				return today
 			}
 			const tomorrow = new Date(today)
@@ -99,9 +90,6 @@ export function getEstimatedDeliveryDate(shippingId: string): Date {
 	}
 }
 
-/**
- * Formatear fecha de entrega en español
- */
 export function formatDeliveryDate(date: Date): string {
 	const options: Intl.DateTimeFormatOptions = {
 		weekday: 'long',

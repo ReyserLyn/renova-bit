@@ -2,7 +2,7 @@ import { createCoupon } from '@/actions/coupons'
 
 /**
  * Script para crear cupones desde la línea de comandos
- * Uso: pnpm tsx src/scripts/create-coupon.ts TECNO10 10
+ * Uso: pnpm tsx src/scripts/create-coupon.ts BIENVENIDA 10
  */
 async function main() {
 	const args = process.argv.slice(2)
@@ -11,7 +11,9 @@ async function main() {
 		console.error(
 			'Uso: pnpm tsx src/scripts/create-coupon.ts <CODIGO> <PORCENTAJE>',
 		)
-		console.error('Ejemplo: pnpm tsx src/scripts/create-coupon.ts TECNO10 10')
+		console.error(
+			'Ejemplo: pnpm tsx src/scripts/create-coupon.ts BIENVENIDA 10',
+		)
 		process.exit(1)
 	}
 

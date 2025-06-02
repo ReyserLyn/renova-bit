@@ -6,9 +6,6 @@ import { useCartStore } from '@/lib/stores/cart-store'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-/**
- * Hook para manejar la validación y aplicación de cupones
- */
 export function useCoupon() {
 	const { user } = useUser()
 	const { getSubtotal } = useCartStore()
@@ -21,7 +18,6 @@ export function useCoupon() {
 		},
 		onSuccess: (data) => {
 			if (data.isValid && data.coupon) {
-				// Actualizar el store con el cupón validado
 				useCartStore.getState().setValidatedCoupon(data.coupon)
 				toast.success('¡Cupón aplicado correctamente!')
 			} else {

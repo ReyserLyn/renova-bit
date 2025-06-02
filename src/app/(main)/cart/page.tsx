@@ -11,12 +11,10 @@ export default function CartPage() {
 	const { items, isLoading } = useCart()
 	const { isLoaded: isUserLoaded } = useUser()
 
-	// Mostrar skeleton mientras carga el usuario o el carrito
 	if (!isUserLoaded || isLoading) {
 		return <CartSkeleton />
 	}
 
-	// Mostrar carrito vacío si no hay items
 	if (items.length === 0) {
 		return <EmptyCart />
 	}

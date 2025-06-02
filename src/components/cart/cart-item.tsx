@@ -59,13 +59,11 @@ export function CartItem({ item }: CartItemProps) {
 								{item.product.brand.name}
 							</p>
 						</div>
-						{/* Precio unitario */}
 						<p className="font-semibold text-sm sm:text-base flex-shrink-0">
 							S/{item.product.price}
 						</p>
 					</div>
 
-					{/* Controles de cantidad y total */}
 					<div className="mt-3 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
 						<div className="flex items-center gap-2">
 							<Button
@@ -103,7 +101,6 @@ export function CartItem({ item }: CartItemProps) {
 							</Button>
 						</div>
 
-						{/* Total del item */}
 						<p className="font-bold text-base sm:text-lg">
 							S/{itemTotal.toFixed(2)}
 						</p>

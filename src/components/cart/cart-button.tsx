@@ -9,7 +9,6 @@ export function CartButton() {
 	const { totalItems } = useCart()
 	const mounted = useMounted()
 
-	// En el servidor y antes de montar, mostrar 0 items
 	const displayItems = mounted ? totalItems : 0
 
 	return (

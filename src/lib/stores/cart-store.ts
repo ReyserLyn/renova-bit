@@ -5,10 +5,9 @@ import type { InferSelectModel } from 'drizzle-orm'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
+import { type ShippingOption, getShippingOptions } from '../shipping'
 
-/**
- * Tipo para un item del carrito
- */
+// tipo para un item del carrito
 export type CartItem = {
 	product: InferSelectModel<typeof products> & {
 		brand: { id: string; name: string; slug: string }
@@ -16,9 +15,7 @@ export type CartItem = {
 	quantity: number
 }
 
-/**
- * Tipo para un cupón validado
- */
+// tipo para un cupón validado
 export type ValidatedCoupon = {
 	id: string
 	code: string
@@ -26,9 +23,7 @@ export type ValidatedCoupon = {
 	discount_amount: number
 }
 
-/**
- * Estado del store del carrito
- */
+// estado del store del carrito
 interface CartState {
 	items: CartItem[]
 	isLoading: boolean
@@ -36,26 +31,31 @@ interface CartState {
 	lastSyncedAt: string | null
 	validatedCoupon: ValidatedCoupon | null
 	selectedShipping: string
+	shippingOptions: ShippingOption[]
 }
 
-/**
- * Acciones del store del carrito
- */
+// acciones del store del carrito
 interface CartActions {
-	// Acciones básicas del carrito
 	addItem: (product: CartItem['product'], quantity?: number) => void
 	removeItem: (productId: string) => void
 	updateQuantity: (productId: string, quantity: number) => void
 	clearCart: () => void
 
-	// Utilidades
+	// Getters básicos
 	getItemCount: () => number
-	getSubtotal: () => number
 	getTotalItems: () => number
-	getDiscountAmount: () => number
-	getFinalTotal: () => number
 
-	// Cupones
+	// Cálculos financieros
+	getSubtotal: () => number
+	getDiscountAmount: () => number
+	getShippingCost: () => number
+	getTotal: () => number
+
+	// Opciones de envío
+	getShippingOptions: () => ShippingOption[]
+	getSelectedShippingOption: () => ShippingOption | undefined
+
+	// Manejo de cupones
 	setValidatedCoupon: (coupon: ValidatedCoupon) => void
 	removeCoupon: () => void
 
@@ -84,19 +84,18 @@ export const useCartStore = create<CartStore>()(
 			lastSyncedAt: null,
 			validatedCoupon: null,
 			selectedShipping: 'express',
+			shippingOptions: getShippingOptions(),
 
 			// Añadir item al carrito
 			addItem: (product, quantity = 1) => {
-				set((state: CartState) => {
+				set((state) => {
 					const existingItem = state.items.find(
-						(item: CartItem) => item.product.id === product.id,
+						(item) => item.product.id === product.id,
 					)
 
 					if (existingItem) {
-						// Si ya existe, incrementar cantidad
 						existingItem.quantity += quantity
 					} else {
-						// Si no existe, añadir nuevo item
 						state.items.push({ product, quantity })
 					}
 				})
@@ -104,9 +103,9 @@ export const useCartStore = create<CartStore>()(
 
 			// Eliminar item del carrito
 			removeItem: (productId) => {
-				set((state: CartState) => {
+				set((state) => {
 					state.items = state.items.filter(
-						(item: CartItem) => item.product.id !== productId,
+						(item) => item.product.id !== productId,
 					)
 				})
 			},
@@ -118,10 +117,8 @@ export const useCartStore = create<CartStore>()(
 					return
 				}
 
-				set((state: CartState) => {
-					const item = state.items.find(
-						(item: CartItem) => item.product.id === productId,
-					)
+				set((state) => {
+					const item = state.items.find((item) => item.product.id === productId)
 					if (item) {
 						item.quantity = quantity
 					}
@@ -130,7 +127,7 @@ export const useCartStore = create<CartStore>()(
 
 			// Limpiar carrito
 			clearCart: () => {
-				set((state: CartState) => {
+				set((state) => {
 					state.items = []
 					state.validatedCoupon = null
 				})
@@ -141,17 +138,17 @@ export const useCartStore = create<CartStore>()(
 				return get().items.length
 			},
 
-			// Obtener subtotal del carrito (sin descuentos)
-			getSubtotal: () => {
-				return get().items.reduce((total, item) => {
-					return total + Number.parseFloat(item.product.price) * item.quantity
-				}, 0)
-			},
-
 			// Obtener total de items (sumando cantidades)
 			getTotalItems: () => {
 				return get().items.reduce((total, item) => {
 					return total + item.quantity
+				}, 0)
+			},
+
+			// Obtener subtotal del carrito (sin descuentos ni envío)
+			getSubtotal: () => {
+				return get().items.reduce((total, item) => {
+					return total + Number.parseFloat(item.product.price) * item.quantity
 				}, 0)
 			},
 
@@ -161,10 +158,33 @@ export const useCartStore = create<CartStore>()(
 				return state.validatedCoupon?.discount_amount || 0
 			},
 
-			// Obtener total final (con descuentos aplicados)
-			getFinalTotal: () => {
+			// Obtener costo de envío
+			getShippingCost: () => {
 				const state = get()
-				return state.getSubtotal() - state.getDiscountAmount()
+				const selectedOption = state.getSelectedShippingOption()
+				return selectedOption?.price || 0
+			},
+
+			// Obtener total final (subtotal - descuento + envío)
+			getTotal: () => {
+				const state = get()
+				const subtotal = state.getSubtotal()
+				const discount = state.getDiscountAmount()
+				const shipping = state.getShippingCost()
+				return subtotal - discount + shipping
+			},
+
+			// Obtener opciones de envío
+			getShippingOptions: () => {
+				return get().shippingOptions
+			},
+
+			// Obtener opción de envío seleccionada
+			getSelectedShippingOption: () => {
+				const state = get()
+				return state.shippingOptions.find(
+					(opt) => opt.id === state.selectedShipping,
+				)
 			},
 
 			// Establecer cupón validado
@@ -214,14 +234,12 @@ export const useCartStore = create<CartStore>()(
 			},
 		})),
 		{
-			name: 'renova-cart', // Nombre en localStorage
+			name: 'renova-cart',
 			storage: createJSONStorage(() => localStorage),
 			partialize: (state) => ({
-				// Solo persistir items, lastSyncedAt y método de envío
 				items: state.items,
 				lastSyncedAt: state.lastSyncedAt,
 				selectedShipping: state.selectedShipping,
-				// NO persistir el cupón validado por seguridad
 			}),
 		},
 	),

@@ -11,16 +11,14 @@ import { useCartStore } from '@/lib/stores/cart-store'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-/**
- * Hook principal para manejar el carrito
- * Combina el store local con sincronización a Supabase
- */
 export function useCart() {
 	const { user } = useUser()
 	const {
 		items,
 		isLoading,
 		isSyncing,
+		validatedCoupon,
+		selectedShipping,
 		addItem,
 		removeItem,
 		updateQuantity,
@@ -28,12 +26,17 @@ export function useCart() {
 		getItemCount,
 		getSubtotal,
 		getTotalItems,
-		setSyncing,
 		getDiscountAmount,
-		getFinalTotal,
+		getShippingCost,
+		getTotal,
+		getShippingOptions,
+		getSelectedShippingOption,
+		setSelectedShipping,
+		setValidatedCoupon,
+		removeCoupon,
+		setSyncing,
 	} = useCartStore()
 
-	// Mutación para añadir item (con sincronización optimista)
 	const addItemMutation = useMutation({
 		mutationFn: async ({
 			product,
@@ -42,10 +45,8 @@ export function useCart() {
 			product: CartItem['product']
 			quantity?: number
 		}) => {
-			// Primero actualizar el store local
 			addItem(product, quantity)
 
-			// Si hay usuario, sincronizar con DB
 			if (user) {
 				setSyncing(true)
 				const result = await saveCartItemToDB(user.id, product.id, quantity)
@@ -63,13 +64,10 @@ export function useCart() {
 		},
 	})
 
-	// Mutación para eliminar item
 	const removeItemMutation = useMutation({
 		mutationFn: async (productId: string) => {
-			// Primero actualizar el store local
 			removeItem(productId)
 
-			// Si hay usuario, sincronizar con DB
 			if (user) {
 				setSyncing(true)
 				const result = await removeCartItemFromDB(user.id, productId)
@@ -87,7 +85,6 @@ export function useCart() {
 		},
 	})
 
-	// Mutación para actualizar cantidad
 	const updateQuantityMutation = useMutation({
 		mutationFn: async ({
 			productId,
@@ -96,10 +93,8 @@ export function useCart() {
 			productId: string
 			quantity: number
 		}) => {
-			// Primero actualizar el store local
 			updateQuantity(productId, quantity)
 
-			// Si hay usuario, sincronizar con DB
 			if (user) {
 				setSyncing(true)
 				const result = await saveCartItemToDB(user.id, productId, quantity)
@@ -114,13 +109,10 @@ export function useCart() {
 		},
 	})
 
-	// Mutación para limpiar carrito
 	const clearCartMutation = useMutation({
 		mutationFn: async () => {
-			// Primero limpiar el store local
 			clearCart()
 
-			// Si hay usuario, sincronizar con DB
 			if (user) {
 				setSyncing(true)
 				const result = await clearCartInDB(user.id)
@@ -138,38 +130,49 @@ export function useCart() {
 		},
 	})
 
-	// Función helper para verificar si un producto está en el carrito
 	const isInCart = (productId: string) => {
 		return items.some((item) => item.product.id === productId)
 	}
 
-	// Función helper para obtener la cantidad de un producto en el carrito
 	const getQuantity = (productId: string) => {
 		const item = items.find((item) => item.product.id === productId)
 		return item?.quantity || 0
 	}
 
 	return {
-		// Estado
+		// Estado del carrito
 		items,
 		isLoading,
 		isSyncing,
-		itemCount: getItemCount(),
-		subtotal: getSubtotal(),
-		totalItems: getTotalItems(),
-		validatedCoupon: useCartStore.getState().validatedCoupon,
-		discountAmount: getDiscountAmount(),
-		finalTotal: getFinalTotal(),
-		selectedShipping: useCartStore.getState().selectedShipping,
+		validatedCoupon,
+		selectedShipping,
 
-		// Acciones con mutaciones
+		// Contadores
+		itemCount: getItemCount(),
+		totalItems: getTotalItems(),
+
+		// Cálculos financieros
+		subtotal: getSubtotal(),
+		discountAmount: getDiscountAmount(),
+		shippingCost: getShippingCost(),
+		total: getTotal(),
+
+		// Opciones de envío
+		shippingOptions: getShippingOptions(),
+		selectedShippingOption: getSelectedShippingOption(),
+
+		// Acciones del carrito
 		addItem: addItemMutation.mutate,
 		removeItem: removeItemMutation.mutate,
 		updateQuantity: updateQuantityMutation.mutate,
 		clearCart: clearCartMutation.mutate,
 
+		// Acciones de cupones
+		setValidatedCoupon,
+		removeCoupon,
+
 		// Acciones de envío
-		setSelectedShipping: useCartStore.getState().setSelectedShipping,
+		setSelectedShipping,
 
 		// Estados de las mutaciones
 		isAddingItem: addItemMutation.isPending,

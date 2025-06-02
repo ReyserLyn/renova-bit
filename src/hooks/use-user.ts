@@ -2,14 +2,9 @@
 
 import { useUser as useClerkUser } from '@clerk/nextjs'
 
-/**
- * Hook personalizado para obtener la información del usuario actual
- * SIN sincronización automática del carrito
- */
 export function useUser() {
 	const { user: clerkUser, isLoaded, isSignedIn } = useClerkUser()
 
-	// Transformar el usuario de Clerk a un formato más simple
 	const user = clerkUser
 		? {
 				id: clerkUser.id,
@@ -25,6 +20,7 @@ export function useUser() {
 		user,
 		isLoaded,
 		isSignedIn,
+
 		// Helpers útiles
 		isGuest: !isSignedIn,
 		userId: user?.id || null,

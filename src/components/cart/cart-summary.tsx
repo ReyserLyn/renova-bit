@@ -13,11 +13,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useCart } from '@/hooks/use-cart'
 import { useCoupon } from '@/hooks/use-coupon'
-import {
-	formatDeliveryDate,
-	getEstimatedDeliveryDate,
-	getShippingOptions,
-} from '@/lib/shipping'
+import { formatDeliveryDate, getEstimatedDeliveryDate } from '@/lib/shipping'
 import { Info, Loader2, ShoppingBag, Tag, Truck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -26,30 +22,24 @@ import { Separator } from '../ui/separator'
 export function CartSummary() {
 	const router = useRouter()
 	const {
-		subtotal,
 		itemCount,
-		clearCart,
-		isClearingCart,
+		totalItems,
+		subtotal,
+		discountAmount,
+		shippingCost,
+		total,
 		validatedCoupon,
 		selectedShipping,
 		setSelectedShipping,
-		discountAmount,
-		totalItems,
-		finalTotal,
+		shippingOptions,
+		clearCart,
+		isClearingCart,
 	} = useCart()
+
 	const { validateCoupon, isValidating, removeCoupon } = useCoupon()
 	const [couponInput, setCouponInput] = useState('')
 
-	// Obtener opciones de envío
-	const shippingOptions = getShippingOptions()
-	const selectedShippingOption = shippingOptions.find(
-		(opt) => opt.id === selectedShipping,
-	)
-	const shippingCost = selectedShippingOption?.price || 0
-
-	// Cálculos
 	const subtotalAfterDiscount = subtotal - discountAmount
-	const total = subtotalAfterDiscount + shippingCost
 
 	const handleApplyCoupon = () => {
 		if (!couponInput.trim()) return
@@ -62,7 +52,6 @@ export function CartSummary() {
 	}
 
 	const handleCheckout = () => {
-		// TODO: Implementar checkout con información de envío
 		router.push(`/checkout?shipping=${selectedShipping}`)
 	}
 
@@ -76,17 +65,15 @@ export function CartSummary() {
 			</CardHeader>
 
 			<CardContent className="space-y-4 px-4 sm:px-6">
-				{/* Resumen de productos */}
 				<div className="space-y-2">
 					<div className="flex justify-between text-sm sm:text-base">
 						<span className="text-muted-foreground">
-							Subtotal ({itemCount} {itemCount === 1 ? 'producto' : 'productos'}
-							)
+							Subtotal ({totalItems}{' '}
+							{totalItems === 1 ? 'producto' : 'productos'})
 						</span>
 						<span className="font-medium">S/{subtotal.toFixed(2)}</span>
 					</div>
 
-					{/* Cupón de descuento */}
 					{!validatedCoupon ? (
 						<div className="space-y-2">
 							<Label
@@ -144,7 +131,6 @@ export function CartSummary() {
 				</div>
 				<Separator />
 
-				{/* Opciones de envío */}
 				<div className="space-y-3">
 					<Label className="text-sm flex items-center gap-1">
 						<Truck className="h-4 w-4" />
@@ -198,7 +184,6 @@ export function CartSummary() {
 
 				<Separator />
 
-				{/* Total final */}
 				<div className="space-y-2">
 					{discountAmount > 0 && (
 						<div className="flex justify-between text-sm">
