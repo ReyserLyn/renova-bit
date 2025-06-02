@@ -169,7 +169,7 @@ const seedData = {
 			name: 'Wacom',
 		},
 		{
-			name: 'Xioami',
+			name: 'Xiaomi',
 		},
 		{
 			name: 'XPG',

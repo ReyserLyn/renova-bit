@@ -5,7 +5,7 @@ import { ReviewForm } from '@/components/product/review-form'
 import { ReviewList } from '@/components/product/review-list'
 import { DeleteConfirmationDialog } from '@/components/ui/delete-confirmation-dialog'
 import type { Review, ReviewStats } from '@/types/product'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -27,7 +27,6 @@ export function ReviewSection({
 	currentUserId,
 }: ReviewSectionProps) {
 	const router = useRouter()
-	const pathname = usePathname()
 	const [editingReview, setEditingReview] = useState<Review | null>(null)
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 	const [reviewToDelete, setReviewToDelete] = useState<string | null>(null)

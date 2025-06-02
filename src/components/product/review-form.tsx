@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Rating } from '@/components/ui/rating'
 import { Textarea } from '@/components/ui/textarea'
 import type { Review } from '@/types/product'
-import { useUser } from '@clerk/nextjs'
+import { SignInButton, useUser } from '@clerk/nextjs'
 import bcrypt from 'bcryptjs'
 import { Loader2, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -31,13 +31,15 @@ export function ReviewForm({
 	onCancelEdit,
 	onReviewUpdated,
 }: ReviewFormProps) {
-	const { isSignedIn } = useUser()
+	const { user } = useUser()
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [rating, setRating] = useState(5)
 	const [title, setTitle] = useState('')
 	const [comment, setComment] = useState('')
 
 	const isEditing = !!editingReview
+
+	const [clerkReady] = useState(true)
 
 	useEffect(() => {
 		if (editingReview) {
@@ -54,7 +56,7 @@ export function ReviewForm({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		if (!isSignedIn) {
+		if (!user) {
 			toast.error('Debes iniciar sesión para dejar una reseña')
 			return
 		}
@@ -115,7 +117,7 @@ export function ReviewForm({
 		}
 	}
 
-	if (!isSignedIn) {
+	if (!clerkReady) {
 		return (
 			<Card>
 				<CardHeader>
@@ -125,7 +127,7 @@ export function ReviewForm({
 					<div className="space-y-2">
 						<div className="h-4 bg-muted rounded animate-pulse w-20" />
 						<div className="flex gap-1">
-							{[...Array(5)].map(() => (
+							{[...Array(5)].map((_, i) => (
 								<div
 									key={bcrypt.genSaltSync(2)}
 									className="h-6 w-6 bg-muted rounded animate-pulse"
@@ -142,6 +144,30 @@ export function ReviewForm({
 						<div className="h-24 bg-muted rounded animate-pulse" />
 					</div>
 					<div className="h-10 bg-muted rounded animate-pulse" />
+				</CardContent>
+			</Card>
+		)
+	}
+
+	if (!user) {
+		return (
+			<Card>
+				<CardContent>
+					<div className="text-center py-8">
+						<div className="h-12 w-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
+							<Star className="h-6 w-6 text-primary" />
+						</div>
+						<h3 className="text-lg font-semibold mb-2">
+							Inicia sesión para escribir una reseña
+						</h3>
+						<p className="text-muted-foreground mb-4">
+							Necesitas estar autenticado para poder compartir tu experiencia
+							con este producto
+						</p>
+						<Button asChild>
+							<SignInButton mode="modal" />
+						</Button>
+					</div>
 				</CardContent>
 			</Card>
 		)

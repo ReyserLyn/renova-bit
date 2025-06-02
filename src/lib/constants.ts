@@ -227,10 +227,10 @@ export const navOptions: NavOptionsType = {
 					title: 'Vulcan',
 				},
 				{
-					title: 'wacom',
+					title: 'Wacom',
 				},
 				{
-					title: 'Xioami',
+					title: 'Xiaomi',
 				},
 				{
 					title: 'XPG',

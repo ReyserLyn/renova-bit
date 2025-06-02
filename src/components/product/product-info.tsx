@@ -69,7 +69,6 @@ export function ProductInfo({
 		}
 	}
 
-	// Usar los nuevos campos de precio
 	const priceNormal = Number(product.price) || Number(product.price) || 0
 	const priceWeb =
 		Number(product.price_web) || Number(product.price) - 10.1 || 0
