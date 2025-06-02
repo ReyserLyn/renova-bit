@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@/components/theme-provider'
-import { esES } from '@clerk/localizations'
+import { esES } from '@/lib/translation/es-ES'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Outfit } from 'next/font/google'
