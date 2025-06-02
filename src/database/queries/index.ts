@@ -12,3 +12,9 @@ export * from './cart'
 
 // Cupones
 export * from './coupons'
+
+// Reviews
+export * from './reviews'
+
+// Wishlist
+export * from './wishlist'

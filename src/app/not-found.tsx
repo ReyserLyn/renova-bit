@@ -11,14 +11,16 @@ export const metadata: Metadata = {
 
 export default function NotFoundPage() {
 	return (
-		<MainLayoutContent>
-			<EmptyState
-				icon={FileQuestion}
-				title="Página no encontrada"
-				description="Lo sentimos, la página que buscas no existe. Puede que haya sido movida, eliminada o que hayas escrito mal la dirección."
-				actionLabel="Volver al inicio"
-				actionHref="/"
-			/>
-		</MainLayoutContent>
+		<div className="min-h-screen bg-background text-foreground">
+			<MainLayoutContent>
+				<EmptyState
+					icon={FileQuestion}
+					title="Página no encontrada"
+					description="Lo sentimos, la página que buscas no existe. Puede que haya sido movida, eliminada o que hayas escrito mal la dirección."
+					actionLabel="Volver al inicio"
+					actionHref="/"
+				/>
+			</MainLayoutContent>
+		</div>
 	)
 }

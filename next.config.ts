@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
 		ignoreDuringBuilds: true,
 	},
 	images: {
-		remotePatterns: [{ hostname: 'rematazo.pe' }],
+		remotePatterns: [
+			{ hostname: 'rematazo.pe' },
+			{ hostname: 'img.clerk.com' },
+		],
 	},
 }
 

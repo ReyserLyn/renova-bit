@@ -29,6 +29,24 @@ export async function getProductBySlug(slug: string) {
 }
 
 /**
+ * Obtener un producto completo con reviews para la página de producto
+ */
+export async function getProductPageData(slug: string) {
+	return await db.query.products.findFirst({
+		where: eq(products.slug, slug),
+		with: {
+			brand: true,
+			category: true,
+			reviews: {
+				where: (reviews, { eq }) => eq(reviews.is_approved, true),
+				orderBy: (reviews, { desc }) => [desc(reviews.created_at)],
+				limit: 10, // Limitar a las 10 más recientes
+			},
+		},
+	})
+}
+
+/**
  * Obtener productos por categoría
  */
 export async function getProductsByCategory(categoryId: string) {

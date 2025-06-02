@@ -89,9 +89,15 @@ export function useCart() {
 
 			// Programar sincronización con debounce
 			if (user) {
-				debouncedSync(`add-${product.id}`, () =>
-					saveCartItemToDB(user.id, product.id, quantity),
-				)
+				debouncedSync(`add-${product.id}`, () => {
+					const currentItems = useCartStore.getState().items
+					const item = currentItems.find(
+						(item) => item.product.id === product.id,
+					)
+					const totalQuantity = item?.quantity || quantity
+
+					return saveCartItemToDB(user.id, product.id, totalQuantity)
+				})
 			}
 
 			return { success: true }

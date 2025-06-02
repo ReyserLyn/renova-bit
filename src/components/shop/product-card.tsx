@@ -79,7 +79,7 @@ export function ProductCard({ product }: ProductCardProps) {
 						</span>
 						<Link href={`/producto/${product.slug}`}>
 							<span className="text-base text-red-600 dark:text-red-400">
-								S/{Number(product.price) - 10.1} Precio Web
+								S/{Number(product.price_web)} Precio Web
 							</span>
 						</Link>
 					</div>
