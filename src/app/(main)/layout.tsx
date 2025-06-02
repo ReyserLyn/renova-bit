@@ -16,7 +16,7 @@ import { useCartSync } from '@/hooks/use-cart-sync'
 import Link from 'next/link'
 import { Toaster } from 'sonner'
 
-function MainLayoutContent({ children }: { children: React.ReactNode }) {
+export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 	useCartSync()
 
 	return (
