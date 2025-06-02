@@ -166,7 +166,7 @@ const seedData = {
 			name: 'Vulcan',
 		},
 		{
-			name: 'wacom',
+			name: 'Wacom',
 		},
 		{
 			name: 'Xioami',
