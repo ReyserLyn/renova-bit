@@ -9,6 +9,7 @@ import { useUser } from '@/hooks/use-user'
 import type { CartItem } from '@/lib/stores/cart-store'
 import { useCartStore } from '@/lib/stores/cart-store'
 import { useMutation } from '@tanstack/react-query'
+import { useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 
 export function useCart() {
@@ -37,6 +38,44 @@ export function useCart() {
 		setSyncing,
 	} = useCartStore()
 
+	// Sistema de debouncing para sincronización
+	const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+	const pendingSyncsRef = useRef<Map<string, () => Promise<any>>>(new Map())
+
+	const debouncedSync = useCallback(
+		(key: string, syncFn: () => Promise<any>) => {
+			if (!user) return
+
+			// Agregar la función de sincronización pendiente
+			pendingSyncsRef.current.set(key, syncFn)
+
+			// Limpiar timeout anterior
+			if (syncTimeoutRef.current) {
+				clearTimeout(syncTimeoutRef.current)
+			}
+
+			// Crear nuevo timeout para ejecutar todas las sincronizaciones pendientes
+			syncTimeoutRef.current = setTimeout(async () => {
+				if (pendingSyncsRef.current.size === 0) return
+
+				setSyncing(true)
+				try {
+					// Ejecutar todas las sincronizaciones pendientes
+					const syncPromises = Array.from(pendingSyncsRef.current.values()).map(
+						(fn) => fn(),
+					)
+					await Promise.all(syncPromises)
+				} catch (error) {
+					console.error('Error en sincronización:', error)
+				} finally {
+					setSyncing(false)
+					pendingSyncsRef.current.clear()
+				}
+			}, 1000) // Esperar 1 segundo antes de sincronizar
+		},
+		[user, setSyncing],
+	)
+
 	const addItemMutation = useMutation({
 		mutationFn: async ({
 			product,
@@ -45,14 +84,16 @@ export function useCart() {
 			product: CartItem['product']
 			quantity?: number
 		}) => {
+			// Actualizar el estado local inmediatamente
 			addItem(product, quantity)
 
+			// Programar sincronización con debounce
 			if (user) {
-				setSyncing(true)
-				const result = await saveCartItemToDB(user.id, product.id, quantity)
-				setSyncing(false)
-				return result
+				debouncedSync(`add-${product.id}`, () =>
+					saveCartItemToDB(user.id, product.id, quantity),
+				)
 			}
+
 			return { success: true }
 		},
 		onSuccess: () => {
@@ -66,14 +107,16 @@ export function useCart() {
 
 	const removeItemMutation = useMutation({
 		mutationFn: async (productId: string) => {
+			// Actualizar el estado local inmediatamente
 			removeItem(productId)
 
+			// Programar sincronización con debounce
 			if (user) {
-				setSyncing(true)
-				const result = await removeCartItemFromDB(user.id, productId)
-				setSyncing(false)
-				return result
+				debouncedSync(`remove-${productId}`, () =>
+					removeCartItemFromDB(user.id, productId),
+				)
 			}
+
 			return { success: true }
 		},
 		onSuccess: () => {
@@ -93,14 +136,16 @@ export function useCart() {
 			productId: string
 			quantity: number
 		}) => {
+			// Actualizar el estado local inmediatamente
 			updateQuantity(productId, quantity)
 
+			// Programar sincronización con debounce
 			if (user) {
-				setSyncing(true)
-				const result = await saveCartItemToDB(user.id, productId, quantity)
-				setSyncing(false)
-				return result
+				debouncedSync(`update-${productId}`, () =>
+					saveCartItemToDB(user.id, productId, quantity),
+				)
 			}
+
 			return { success: true }
 		},
 		onError: (error) => {
@@ -111,13 +156,18 @@ export function useCart() {
 
 	const clearCartMutation = useMutation({
 		mutationFn: async () => {
+			// Actualizar el estado local inmediatamente
 			clearCart()
 
+			// Sincronización inmediata para limpiar carrito (es una acción final)
 			if (user) {
 				setSyncing(true)
-				const result = await clearCartInDB(user.id)
-				setSyncing(false)
-				return result
+				try {
+					const result = await clearCartInDB(user.id)
+					return result
+				} finally {
+					setSyncing(false)
+				}
 			}
 			return { success: true }
 		},
@@ -174,10 +224,8 @@ export function useCart() {
 		// Acciones de envío
 		setSelectedShipping,
 
-		// Estados de las mutaciones
+		// Estados de las mutaciones (solo los que se usan)
 		isAddingItem: addItemMutation.isPending,
-		isRemovingItem: removeItemMutation.isPending,
-		isUpdatingQuantity: updateQuantityMutation.isPending,
 		isClearingCart: clearCartMutation.isPending,
 
 		// Helpers

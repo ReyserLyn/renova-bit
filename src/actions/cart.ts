@@ -6,9 +6,7 @@ import type { CartItem } from '@/lib/stores/cart-store'
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
-/**
- * Obtener items del carrito de un usuario desde la base de datos
- */
+// obtener items del carrito de un usuario desde la base de datos
 export async function getCartItemsFromDB(userId: string): Promise<CartItem[]> {
 	try {
 		const items = await db.query.cartItems.findMany({
@@ -32,9 +30,7 @@ export async function getCartItemsFromDB(userId: string): Promise<CartItem[]> {
 	}
 }
 
-/**
- * Guardar o actualizar un item en el carrito de la base de datos
- */
+// guardar o actualizar un item en el carrito de la base de datos
 export async function saveCartItemToDB(
 	userId: string,
 	productId: string,
@@ -76,9 +72,7 @@ export async function saveCartItemToDB(
 	}
 }
 
-/**
- * Eliminar un item del carrito en la base de datos
- */
+// eliminar un item del carrito en la base de datos
 export async function removeCartItemFromDB(userId: string, productId: string) {
 	try {
 		await db
@@ -95,9 +89,7 @@ export async function removeCartItemFromDB(userId: string, productId: string) {
 	}
 }
 
-/**
- * Limpiar todo el carrito de un usuario en la base de datos
- */
+// limpiar todo el carrito de un usuario en la base de datos
 export async function clearCartInDB(userId: string) {
 	try {
 		await db.delete(cartItems).where(eq(cartItems.user_id, userId))
@@ -110,47 +102,23 @@ export async function clearCartInDB(userId: string) {
 	}
 }
 
-/**
- * Sincronizar el carrito local con la base de datos
- * (útil al iniciar sesión)
- */
-export async function syncCartWithDB(userId: string, localItems: CartItem[]) {
+// reemplazar completamente el carrito en la base de datos con items locales
+export async function replaceCartInDB(userId: string, localItems: CartItem[]) {
 	try {
-		// Obtener items actuales en la DB
-		const dbItems = await getCartItemsFromDB(userId)
+		// Primero limpiar todo el carrito existente en la BD
+		await clearCartInDB(userId)
 
-		// Crear un mapa para búsqueda rápida
-		const dbItemsMap = new Map(dbItems.map((item) => [item.product.id, item]))
-		let hasChanges = false
-
-		// Sincronizar cada item local
-		for (const localItem of localItems) {
-			const dbItem = dbItemsMap.get(localItem.product.id)
-
-			if (dbItem) {
-				// Si existe en DB, usar la cantidad mayor
-				const newQuantity = Math.max(dbItem.quantity, localItem.quantity)
-				if (newQuantity !== dbItem.quantity) {
-					await saveCartItemToDB(userId, localItem.product.id, newQuantity)
-					hasChanges = true
-				}
-			} else {
-				// Si no existe en DB, agregarlo
+		// Luego insertar todos los items locales
+		if (localItems.length > 0) {
+			for (const localItem of localItems) {
 				await saveCartItemToDB(userId, localItem.product.id, localItem.quantity)
-				hasChanges = true
 			}
 		}
 
-		// Solo obtener el carrito actualizado si hubo cambios
-		if (hasChanges) {
-			const updatedCart = await getCartItemsFromDB(userId)
-			return { success: true, items: updatedCart }
-		}
-
-		// Si no hubo cambios, devolver los items actuales
-		return { success: true, items: dbItems }
+		revalidatePath('/cart')
+		return { success: true, items: localItems }
 	} catch (error) {
-		console.error('Error al sincronizar carrito:', error)
-		return { success: false, error: 'Error al sincronizar carrito' }
+		console.error('Error al reemplazar carrito:', error)
+		return { success: false, error: 'Error al reemplazar carrito' }
 	}
 }

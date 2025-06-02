@@ -8,10 +8,10 @@ import { useCart } from '@/hooks/use-cart'
 import { useUser } from '@/hooks/use-user'
 
 export default function CartPage() {
-	const { items, isLoading } = useCart()
+	const { items, isLoading, isSyncing } = useCart()
 	const { isLoaded: isUserLoaded } = useUser()
 
-	if (!isUserLoaded || isLoading) {
+	if (!isUserLoaded || (isLoading && items.length === 0)) {
 		return <CartSkeleton />
 	}
 
@@ -21,9 +21,15 @@ export default function CartPage() {
 
 	return (
 		<div className="container mx-auto px-4 py-4 sm:py-8 max-w-full overflow-hidden">
-			<h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">
-				Carrito de Compras
-			</h1>
+			<div className="flex items-center gap-2 mb-4 sm:mb-8">
+				<h1 className="text-2xl sm:text-3xl font-bold">Carrito de Compras</h1>
+				{isSyncing && (
+					<div className="flex items-center gap-2 text-sm text-muted-foreground sr-only">
+						<div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
+						<span>Sincronizando...</span>
+					</div>
+				)}
+			</div>
 
 			<div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-8">
 				<div className="lg:col-span-2 w-full min-w-0">

@@ -12,8 +12,7 @@ interface CartItemProps {
 }
 
 export function CartItem({ item }: CartItemProps) {
-	const { updateQuantity, removeItem, isUpdatingQuantity, isRemovingItem } =
-		useCart()
+	const { updateQuantity, removeItem } = useCart()
 
 	const handleIncrement = () => {
 		updateQuantity({ productId: item.product.id, quantity: item.quantity + 1 })
@@ -71,7 +70,7 @@ export function CartItem({ item }: CartItemProps) {
 								variant="outline"
 								className="h-7 w-7 sm:h-8 sm:w-8"
 								onClick={handleDecrement}
-								disabled={isUpdatingQuantity || item.quantity <= 1}
+								disabled={item.quantity <= 1}
 							>
 								<Minus className="h-3 w-3 sm:h-4 sm:w-4" />
 							</Button>
@@ -85,7 +84,6 @@ export function CartItem({ item }: CartItemProps) {
 								variant="outline"
 								className="h-7 w-7 sm:h-8 sm:w-8"
 								onClick={handleIncrement}
-								disabled={isUpdatingQuantity}
 							>
 								<Plus className="h-3 w-3 sm:h-4 sm:w-4" />
 							</Button>
@@ -95,7 +93,6 @@ export function CartItem({ item }: CartItemProps) {
 								variant="ghost"
 								className="h-7 w-7 sm:h-8 sm:w-8 ml-2 text-destructive hover:text-destructive"
 								onClick={handleRemove}
-								disabled={isRemovingItem}
 							>
 								<Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
 							</Button>

@@ -5,9 +5,7 @@ import { couponUsages, coupons } from '@/database/schema'
 import bcrypt from 'bcryptjs'
 import { and, eq, gte, isNull, or, sql } from 'drizzle-orm'
 
-/**
- * Validar un código de cupón
- */
+// Validar un código de cupón
 export async function validateCoupon(
 	code: string,
 	userId: string | null,
@@ -118,9 +116,7 @@ export async function validateCoupon(
 	}
 }
 
-/**
- * Registrar el uso de un cupón
- */
+// Registrar el uso de un cupón
 export async function registerCouponUsage(
 	couponId: string,
 	userId: string,
@@ -150,9 +146,7 @@ export async function registerCouponUsage(
 	}
 }
 
-/**
- * Crear un nuevo cupón (para admin)
- */
+// Crear un nuevo cupón (para admin)
 export async function createCoupon(
 	code: string,
 	discountPercent: number,
