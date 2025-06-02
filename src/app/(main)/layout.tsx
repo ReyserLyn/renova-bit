@@ -1,5 +1,6 @@
 'use client'
 
+import Footer from '@/components/layout/footer'
 import HeaderMiddle from '@/components/layout/header-middle'
 import HeaderTop from '@/components/layout/header-top'
 import InputSearch from '@/components/layout/input-search'
@@ -22,7 +23,7 @@ export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 	return (
 		<SidebarProvider open={false}>
 			<AppSidebar />
-			<SidebarInset>
+			<SidebarInset className="min-h-screen flex flex-col">
 				<HeaderTop />
 
 				<HeaderMiddle>
@@ -40,7 +41,9 @@ export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 				<Navbar className="hidden md:block" />
 				<Separator className="container my-2 hidden md:block" />
 
-				{children}
+				<main className="flex-1">{children}</main>
+
+				<Footer />
 			</SidebarInset>
 			<Toaster position="bottom-right" />
 		</SidebarProvider>
