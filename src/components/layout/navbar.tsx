@@ -16,7 +16,7 @@ import { Button } from '../ui/button'
 
 export default function Navbar({ className }: { className?: string }) {
 	return (
-		<div className={cn('container', className)}>
+		<div className={cn('container z-50', className)}>
 			<div className="flex w-full items-center justify-between py-2">
 				<NavigationMenu className="flex-1 justify-start" viewport={false}>
 					<NavigationMenuList className="flex-nowrap gap-1">
