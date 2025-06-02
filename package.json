@@ -9,7 +9,8 @@
 		"lint": "biome check .",
 		"format": "biome check --write",
 		"seed": "tsx src/database/seed.ts",
-		"add-product": "tsx src/scripts/add-product.ts"
+		"add-product": "tsx src/scripts/add-product.ts",
+		"import-products": "tsx src/scripts/import-products.ts"
 	},
 	"dependencies": {
 		"@clerk/nextjs": "^6.20.2",

@@ -57,8 +57,8 @@ export const products = pgTable(
 	'products',
 	{
 		id: uuid('id').primaryKey().defaultRandom(),
-		name: varchar('name', { length: 100 }).notNull(),
-		slug: varchar('slug', { length: 100 }).notNull(),
+		name: varchar('name', { length: 255 }).notNull(),
+		slug: varchar('slug', { length: 255 }).notNull(),
 		image_url: text('image_url').notNull(),
 		short_description: text('short_description').notNull(),
 		long_description: text('long_description').default(''),
