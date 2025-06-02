@@ -1,6 +1,6 @@
 import { db } from '@/database'
 import { products } from '@/database/schema'
-import { and, eq, gte, like, lte } from 'drizzle-orm'
+import { and, eq, gte, like, lte, ne } from 'drizzle-orm'
 
 /**
  * Obtener un producto por su ID
@@ -78,23 +78,23 @@ export async function getFilteredProducts(filters: {
 	inStock?: boolean
 }) {
 	const conditions = []
-	
+
 	if (filters.categoryId) {
 		conditions.push(eq(products.category_id, filters.categoryId))
 	}
-	
+
 	if (filters.brandId) {
 		conditions.push(eq(products.brand_id, filters.brandId))
 	}
-	
+
 	if (filters.minPrice) {
 		conditions.push(gte(products.price, filters.minPrice.toString()))
 	}
-	
+
 	if (filters.maxPrice) {
 		conditions.push(lte(products.price, filters.maxPrice.toString()))
 	}
-	
+
 	if (filters.inStock) {
 		conditions.push(gte(products.stock, 1))
 	}
@@ -111,11 +111,15 @@ export async function getFilteredProducts(filters: {
 /**
  * Obtener productos relacionados (misma categoría, diferente producto)
  */
-export async function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
+export async function getRelatedProducts(
+	productId: string,
+	categoryId: string,
+	limit = 4,
+) {
 	return await db.query.products.findMany({
 		where: and(
 			eq(products.category_id, categoryId),
-			// Excluir el producto actual
+			ne(products.id, productId), // Excluir el producto actual
 		),
 		with: {
 			brand: true,
@@ -123,4 +127,13 @@ export async function getRelatedProducts(productId: string, categoryId: string, 
 		},
 		limit,
 	})
-} 
+}
+
+/**
+ * Obtener productos en oferta (productos con descuento)
+ * TODO: Implementar cuando se añada lógica de ofertas al schema
+ */
+export async function getOffersProducts() {
+	// Por ahora retornamos array vacío hasta implementar ofertas
+	return []
+}

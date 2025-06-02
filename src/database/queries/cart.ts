@@ -92,4 +92,4 @@ export async function getCartItem(userId: string, productId: string) {
 			eq(cartItems.product_id, productId),
 		),
 	})
-} 
+}

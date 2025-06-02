@@ -31,7 +31,7 @@ export async function saveCartItemToDB(
 
 		// Verificar si el item ya existe
 		const existingItem = await getCartItem(userId, productId)
-		
+
 		if (existingItem) {
 			// Actualizar cantidad existente
 			await updateCartItemQuantity(userId, productId, quantity)

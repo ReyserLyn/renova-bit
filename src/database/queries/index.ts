@@ -1,6 +1,9 @@
 // Categorías
 export * from './categories'
 
+// Marcas
+export * from './brands'
+
 // Productos
 export * from './products'
 
@@ -9,4 +12,3 @@ export * from './cart'
 
 // Cupones
 export * from './coupons'
-

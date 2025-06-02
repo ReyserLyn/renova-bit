@@ -92,4 +92,4 @@ export async function getUserCouponHistory(userId: string) {
 			coupon: true,
 		},
 	})
-} 
+}
