@@ -1,3 +1,6 @@
+'use client'
+
+import { useCart } from '@/hooks/use-cart'
 import {
 	SignInButton,
 	SignUpButton,
@@ -7,7 +10,7 @@ import {
 } from '@clerk/nextjs'
 import { LogIn, User } from 'lucide-react'
 import Link from 'next/link'
-import { FaCartShopping } from 'react-icons/fa6'
+import { CartButton } from '../cart/cart-button'
 import { Button } from '../ui/button'
 import InputSearch from './input-search'
 
@@ -16,6 +19,8 @@ export default function HeaderMiddle({
 }: {
 	children: React.ReactNode
 }) {
+	const { totalItems } = useCart()
+
 	return (
 		<nav className="py-5">
 			<div className="container">
@@ -76,20 +81,7 @@ export default function HeaderMiddle({
 						</div>
 
 						<div className="flex-shrink-0">
-							<Link
-								href="/cart"
-								className="flex flex-col items-center hover:cursor-pointer"
-							>
-								<div className="relative">
-									<FaCartShopping size={20} className="flex-shrink-0" />
-									<span className="absolute -top-2 -right-2 bg-gray-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-										0
-									</span>
-								</div>
-								<span className="text-sm font-medium whitespace-nowrap">
-									Su carrito
-								</span>
-							</Link>
+							<CartButton />
 						</div>
 					</div>
 				</div>

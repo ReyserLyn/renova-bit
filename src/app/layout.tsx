@@ -3,6 +3,7 @@ import { esES } from '@clerk/localizations'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Outfit } from 'next/font/google'
+import { Providers } from './providers'
 import './styles/globals.css'
 
 const outfit = Outfit({
@@ -31,7 +32,7 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						{children}
+						<Providers>{children}</Providers>
 					</ThemeProvider>
 				</body>
 			</html>

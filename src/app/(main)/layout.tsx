@@ -1,3 +1,5 @@
+'use client'
+
 import HeaderMiddle from '@/components/layout/header-middle'
 import HeaderTop from '@/components/layout/header-top'
 import InputSearch from '@/components/layout/input-search'
@@ -10,13 +12,13 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { useCartSync } from '@/hooks/use-cart-sync'
 import Link from 'next/link'
+import { Toaster } from 'sonner'
 
-export default function MainLayout({
-	children,
-}: {
-	children: React.ReactNode
-}) {
+function MainLayoutContent({ children }: { children: React.ReactNode }) {
+	useCartSync()
+
 	return (
 		<SidebarProvider open={false}>
 			<AppSidebar />
@@ -40,6 +42,20 @@ export default function MainLayout({
 
 				{children}
 			</SidebarInset>
+			<Toaster
+				position="bottom-right"
+				richColors
+				expand={false}
+				duration={3000}
+			/>
 		</SidebarProvider>
 	)
+}
+
+export default function MainLayout({
+	children,
+}: {
+	children: React.ReactNode
+}) {
+	return <MainLayoutContent>{children}</MainLayoutContent>
 }
