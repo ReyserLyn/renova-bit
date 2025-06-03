@@ -1,7 +1,6 @@
 import { ClientOnlyFilters } from '@/components/shop/client-only-filters'
 import { EmptySearch } from '@/components/shop/empty-products'
-import { ProductList } from '@/components/shop/product-list'
-import { SearchToolbar } from '@/components/shop/search-toolbar'
+import { SearchPageClient } from '@/components/shop/search-page-client'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -57,7 +56,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 	}
 
 	const sortBy = (params.orden as string) || 'relevancia'
-	const viewMode = (params.vista as string) || 'grid'
 
 	const { products, priceRange, brands, categories } =
 		await getSearchPageData(filters)
@@ -262,14 +260,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 					<div className="flex-1 min-w-0">
 						{sortedProducts.length > 0 ? (
 							<>
-								<SearchToolbar
+								<SearchPageClient
+									products={sortedProducts}
 									totalProducts={sortedProducts.length}
 									priceRange={stats.priceRange}
 									sortBy={sortBy}
-									viewMode={viewMode}
 								/>
-
-								<ProductList products={sortedProducts} viewMode={viewMode} />
 
 								{sortedProducts.length < 5 && filters.search && (
 									<Card className="mt-8 border-dashed">

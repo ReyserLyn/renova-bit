@@ -10,6 +10,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { useViewMode } from '@/hooks/use-view-mode'
 import { ArrowUpDownIcon, Grid3X3Icon, ListIcon } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
@@ -21,18 +22,17 @@ interface SearchToolbarProps {
 		max: number
 	}
 	sortBy: string
-	viewMode: string
 }
 
 export function SearchToolbar({
 	totalProducts,
 	priceRange,
 	sortBy,
-	viewMode,
 }: SearchToolbarProps) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
+	const { viewMode, setViewMode } = useViewMode()
 
 	const getUrlWithParams = useCallback(
 		(newParams: Record<string, string>) => {
@@ -58,10 +58,9 @@ export function SearchToolbar({
 
 	const handleViewChange = useCallback(
 		(view: string) => {
-			const newUrl = getUrlWithParams({ vista: view })
-			router.push(newUrl)
+			setViewMode(view as 'grid' | 'list')
 		},
-		[getUrlWithParams, router],
+		[setViewMode],
 	)
 
 	return (

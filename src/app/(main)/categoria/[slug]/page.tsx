@@ -1,7 +1,6 @@
 import { ClientOnlyFilters } from '@/components/shop/client-only-filters'
 import { EmptyCategory } from '@/components/shop/empty-products'
-import { ProductList } from '@/components/shop/product-list'
-import { SearchToolbar } from '@/components/shop/search-toolbar'
+import { SearchPageClient } from '@/components/shop/search-page-client'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { getCategoryBySlug } from '@/database/queries/categories'
 import { getCategoryPageData } from '@/database/queries/products'
@@ -73,7 +72,6 @@ export default async function CategoryPage({
 	}
 
 	const sortBy = (searchParamsResolved.orden as string) || 'relevancia'
-	const viewMode = (searchParamsResolved.vista as string) || 'grid'
 
 	const {
 		products,
@@ -134,14 +132,12 @@ export default async function CategoryPage({
 					<div className="flex-1">
 						{sortedProducts.length > 0 ? (
 							<>
-								<SearchToolbar
+								<SearchPageClient
+									products={sortedProducts}
 									totalProducts={sortedProducts.length}
 									priceRange={stats.priceRange}
 									sortBy={sortBy}
-									viewMode={viewMode}
 								/>
-
-								<ProductList products={sortedProducts} viewMode={viewMode} />
 							</>
 						) : (
 							<EmptyCategory categoryName={categoryData.name} />

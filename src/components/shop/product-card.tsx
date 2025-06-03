@@ -1,17 +1,12 @@
 'use client'
 
-import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card'
+import { ProductImageHover } from '@/components/shop/product-image-hover'
+import { ProductTitleLink } from '@/components/shop/product-title-link'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import type { brands, products } from '@/database/schema'
 import { useCart } from '@/hooks/use-cart'
 import type { InferSelectModel } from 'drizzle-orm'
-import {
-	BoxIcon,
-	Clock,
-	EyeIcon,
-	ImageIcon,
-	ShoppingCartIcon,
-} from 'lucide-react'
-import Image from 'next/image'
+import { BoxIcon, Clock, ShoppingCartIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Badge } from '../ui/badge'
@@ -76,7 +71,6 @@ function OfferCountdown({ endDate }: { endDate: Date }) {
 
 export function ProductCard({ product, offer }: ProductCardProps) {
 	const { addItem, isAddingItem } = useCart()
-	const [imageError, setImageError] = useState(false)
 
 	const handleAddToCart = () => {
 		addItem({ product, quantity: 1 })
@@ -90,13 +84,6 @@ export function ProductCard({ product, offer }: ProductCardProps) {
 		? Number(product.price_web)
 		: Number(product.price)
 
-	const handleImageError = () => {
-		setImageError(true)
-	}
-
-	const hasValidImage =
-		product.image_url && !imageError && product.image_url.trim() !== ''
-
 	return (
 		<Card className="w-full max-w-[320px] py-0 gap-0 my-3 relative">
 			{hasOffer && (
@@ -107,37 +94,13 @@ export function ProductCard({ product, offer }: ProductCardProps) {
 				</div>
 			)}
 
-			<CardContent className="flex justify-center items-center flex-col p-0 relative group">
-				<Link
-					href={`/producto/${product.slug}`}
-					className="absolute inset-0 z-10"
-					aria-label="Ver producto"
+			<CardContent className="flex justify-center items-center flex-col p-0 relative">
+				<ProductImageHover
+					product={product}
+					width={320}
+					height={220}
+					containerClassName="rounded-t-lg"
 				/>
-
-				<div className="relative w-full overflow-hidden bg-background rounded-t-lg">
-					{hasValidImage ? (
-						<Image
-							src={product.image_url}
-							alt={product.name}
-							width={320}
-							height={220}
-							className="w-full h-[220px] object-cover transition-transform duration-300 group-hover:scale-105"
-							onError={handleImageError}
-							unoptimized
-						/>
-					) : (
-						<div className="w-full h-[220px] bg-muted/30 flex items-center justify-center">
-							<ImageIcon className="w-16 h-16 text-muted-foreground/50" />
-						</div>
-					)}
-
-					<div className="absolute inset-0 bg-black/50 dark:bg-black/70 rounded-lg rounded-b-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-						<div className="bg-background/90 backdrop-blur-sm p-3 rounded-full text-foreground flex items-center justify-center border">
-							<EyeIcon className="w-6 h-6" strokeWidth={2} />
-							<span className="ml-2 font-medium">Ver producto</span>
-						</div>
-					</div>
-				</div>
 			</CardContent>
 
 			<CardFooter className="flex flex-col text-left w-full justify-start p-4 gap-2">
@@ -146,11 +109,7 @@ export function ProductCard({ product, offer }: ProductCardProps) {
 						{product.brand.name}
 					</span>
 
-					<Link href={`/producto/${product.slug}`} className="w-full">
-						<CardTitle className="text-[1rem] hover:text-primary transition-all duration-300 text-base line-clamp-3 min-h-[calc(1.5rem*3)] leading-normal">
-							{product.name}
-						</CardTitle>
-					</Link>
+					<ProductTitleLink product={product} />
 				</div>
 
 				<div className="flex w-full items-center justify-between">

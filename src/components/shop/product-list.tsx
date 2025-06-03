@@ -1,8 +1,13 @@
 'use client'
 
 import { ProductCard } from '@/components/shop/product-card'
+import { ProductImageHover } from '@/components/shop/product-image-hover'
+import { ProductTitleLink } from '@/components/shop/product-title-link'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { useCart } from '@/hooks/use-cart'
+import { BoxIcon, ShoppingCartIcon } from 'lucide-react'
 import Link from 'next/link'
 
 interface Product {
@@ -43,6 +48,12 @@ interface ProductListProps {
 }
 
 export function ProductList({ products, viewMode }: ProductListProps) {
+	const { addItem, isAddingItem } = useCart()
+
+	const handleAddToCart = (product: Product) => {
+		addItem({ product, quantity: 1 })
+	}
+
 	if (viewMode === 'grid') {
 		return (
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center">
@@ -80,15 +91,17 @@ export function ProductList({ products, viewMode }: ProductListProps) {
 				return (
 					<Card
 						key={product.id}
-						className="overflow-hidden hover:shadow-lg transition-shadow"
+						className="overflow-hidden hover:shadow-lg transition-shadow py-0"
 					>
 						<div className="flex flex-col lg:flex-row">
-							<div className="lg:w-64 flex-shrink-0 bg-gray-50 dark:bg-gray-800 p-4 flex items-center justify-center">
-								<div className="w-full max-w-48">
-									<img
-										src={product.image_url || '/placeholder-product.jpg'}
-										alt={product.name}
-										className="w-full h-auto object-cover rounded-lg"
+							<div className="lg:w-64 flex-shrink-0 flex  items-stretch justify-center lg:min-h-[280px]">
+								<div className="w-full flex items-center justify-center">
+									<ProductImageHover
+										product={product}
+										width={200}
+										height={240}
+										className="rounded-lg w-full"
+										containerClassName="w-full h-full flex items-center justify-center"
 									/>
 								</div>
 							</div>
@@ -96,9 +109,11 @@ export function ProductList({ products, viewMode }: ProductListProps) {
 							<div className="flex-1 p-6">
 								<div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
 									<div className="flex-1">
-										<h3 className="text-lg font-semibold line-clamp-2 mb-2">
-											{product.name}
-										</h3>
+										<ProductTitleLink
+											product={product}
+											variant="list"
+											className="mb-2"
+										/>
 
 										<div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
 											{product.brand && (
@@ -151,23 +166,33 @@ export function ProductList({ products, viewMode }: ProductListProps) {
 												</p>
 											)}
 										</div>
+
+										{/* Badge de stock */}
+										<div className="mt-2">
+											<Badge variant="secondary" className="gap-1">
+												<BoxIcon className="text-emerald-500" size={12} />
+												stock:{' '}
+												{Number(product.stock) > 0 ? '>10' : product.stock}
+											</Badge>
+										</div>
 									</div>
 
-									<div className="flex flex-col gap-2 lg:w-32">
+									<div className="flex flex-col gap-2 lg:w-40">
 										<Button size="sm" className="w-full" asChild>
 											<Link href={`/producto/${product.slug}`}>
-												Ver Detalles
+												Ver Producto
 											</Link>
 										</Button>
 										<Button
 											variant="outline"
 											size="sm"
-											className="w-full"
-											asChild
+											className="w-full flex items-center justify-center gap-1 text-xs"
+											onClick={() => handleAddToCart(product)}
+											disabled={isAddingItem}
 										>
-											<Link href={`/producto/${product.slug}`}>
-												🛒 Ver Producto
-											</Link>
+											<ShoppingCartIcon size={14} />
+											<span className="hidden sm:inline">Añadir</span>
+											<span className="sm:hidden">+</span>
 										</Button>
 									</div>
 								</div>
