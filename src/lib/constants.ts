@@ -84,6 +84,7 @@ export const navOptions: NavOptionsType = {
 			title: 'Componentes CPU',
 			prefixUrl: '/categoria',
 			icon: Microchip,
+			isActive: true,
 			items: [
 				{
 					title: 'Procesadores',
