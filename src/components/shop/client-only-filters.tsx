@@ -11,6 +11,7 @@ import { useSSRSafeFilters } from '@/hooks/useSSRSafeFilters'
 import { useHasActiveFilters } from '@/lib/stores/filters-store'
 import { transformProductsForFilters } from '@/lib/utils/transform-products'
 import { SlidersHorizontalIcon } from 'lucide-react'
+import { useMemo } from 'react'
 import { FloatingFiltersButton } from './floating-filters-button'
 import ProductFilters from './product-filters'
 
@@ -58,10 +59,9 @@ export function ClientOnlyFilters({
 }: ClientOnlyFiltersProps) {
 	const hasActiveFilters = useHasActiveFilters()
 
-	// Transformar productos al formato esperado por ProductFilters
-	const transformedProducts = products
-		? transformProductsForFilters(products)
-		: undefined
+	const transformedProducts = useMemo(() => {
+		return products ? transformProductsForFilters(products) : undefined
+	}, [products])
 
 	useSSRSafeFilters({
 		categories,
