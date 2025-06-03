@@ -10,13 +10,11 @@ export function useGlobalLoading() {
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout
 
-		// Interceptar navegación para mostrar loading
 		const originalPush = router.push
 		const originalReplace = router.replace
 
 		router.push = (...args) => {
 			setIsLoading(true)
-			// Auto-hide después de 5 segundos por seguridad
 			timeoutId = setTimeout(() => setIsLoading(false), 5000)
 			return originalPush.apply(router, args)
 		}
@@ -27,19 +25,16 @@ export function useGlobalLoading() {
 			return originalReplace.apply(router, args)
 		}
 
-		// Limpiar loading al cambiar de página
 		const handleRouteChange = () => {
 			clearTimeout(timeoutId)
 			setIsLoading(false)
 		}
 
-		// Escuchar eventos de navegación
 		window.addEventListener('beforeunload', handleRouteChange)
 
 		return () => {
 			clearTimeout(timeoutId)
 			window.removeEventListener('beforeunload', handleRouteChange)
-			// Restaurar métodos originales
 			router.push = originalPush
 			router.replace = originalReplace
 		}
