@@ -81,6 +81,45 @@ export default function Navbar({ className }: { className?: string }) {
 								</div>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
+						<NavigationMenuItem>
+							<NavigationMenuTrigger>Información</NavigationMenuTrigger>
+							<NavigationMenuContent className="p-4">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 md:w-[500px] lg:w-[600px]">
+									<div className="px-2">
+										<h6 className="font-semibold uppercase text-sm text-muted-foreground mb-2.5">
+											Empresa
+										</h6>
+										<ul className="grid gap-3">
+											<ListItem title="Sobre Nosotros" href="/sobre-nosotros" />
+											<ListItem title="Contacto" href="/contacto" />
+										</ul>
+									</div>
+									<div className="px-2">
+										<h6 className="font-semibold uppercase text-sm text-muted-foreground mb-2.5">
+											Políticas
+										</h6>
+										<ul className="grid gap-3">
+											<ListItem
+												title="Términos y Condiciones"
+												href="/terminos-condiciones"
+											/>
+											<ListItem
+												title="Política de Privacidad"
+												href="/politica-privacidad"
+											/>
+											<ListItem
+												title="Política de Envíos"
+												href="/politica-envios"
+											/>
+											<ListItem
+												title="Devoluciones y Garantía"
+												href="/politica-devoluciones"
+											/>
+										</ul>
+									</div>
+								</div>
+							</NavigationMenuContent>
+						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
 
