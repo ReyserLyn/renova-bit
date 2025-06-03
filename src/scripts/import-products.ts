@@ -1,5 +1,5 @@
-import { createProduct } from '@/actions/products'
 import { createInterface } from 'node:readline'
+import { createProduct } from '@/actions/products'
 
 // Colores para la consola
 const colors = {
