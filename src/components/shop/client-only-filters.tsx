@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/sheet'
 import { useSSRSafeFilters } from '@/hooks/useSSRSafeFilters'
 import { useHasActiveFilters } from '@/lib/stores/filters-store'
+import { transformProductsForFilters } from '@/lib/utils/transform-products'
 import { SlidersHorizontalIcon } from 'lucide-react'
 import { FloatingFiltersButton } from './floating-filters-button'
 import ProductFilters from './product-filters'
@@ -57,11 +58,16 @@ export function ClientOnlyFilters({
 }: ClientOnlyFiltersProps) {
 	const hasActiveFilters = useHasActiveFilters()
 
+	// Transformar productos al formato esperado por ProductFilters
+	const transformedProducts = products
+		? transformProductsForFilters(products)
+		: undefined
+
 	useSSRSafeFilters({
 		categories,
 		brands,
 		priceRange,
-		products,
+		products: transformedProducts,
 	})
 
 	if (mobileOnly) {
@@ -86,7 +92,7 @@ export function ClientOnlyFilters({
 							categories={categories}
 							brands={brands}
 							priceRange={priceRange}
-							products={products}
+							products={transformedProducts}
 						/>
 					</div>
 				</SheetContent>
@@ -99,7 +105,7 @@ export function ClientOnlyFilters({
 			categories={categories}
 			brands={brands}
 			priceRange={priceRange}
-			products={products}
+			products={transformedProducts}
 		/>
 	)
 }
