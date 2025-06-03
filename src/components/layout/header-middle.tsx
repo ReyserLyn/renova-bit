@@ -1,6 +1,5 @@
 'use client'
 
-import { useCart } from '@/hooks/use-cart'
 import {
 	SignInButton,
 	SignUpButton,
@@ -16,11 +15,11 @@ import InputSearch from './input-search'
 
 export default function HeaderMiddle({
 	children,
+	categories = [],
 }: {
 	children: React.ReactNode
+	categories?: Array<{ id: string; name: string; slug: string }>
 }) {
-	const { totalItems } = useCart()
-
 	return (
 		<nav className="py-5">
 			<div className="container">
@@ -31,7 +30,11 @@ export default function HeaderMiddle({
 						<h1 className="text-2xl font-bold">RenovaBit</h1>
 					</Link>
 
-					<InputSearch className="hidden md:block max-w-[60%]" />
+					<InputSearch
+						className="hidden md:block max-w-[60%]"
+						showCategories={true}
+						categories={categories}
+					/>
 
 					<div className="flex items-center gap-4">
 						<div className="flex items-center gap-4">

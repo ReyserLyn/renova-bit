@@ -14,11 +14,13 @@ import {
 	SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { useCartSync } from '@/hooks/use-cart-sync'
+import { useCategories } from '@/hooks/use-categories'
 import Link from 'next/link'
 import { Toaster } from 'react-hot-toast'
 
 export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 	useCartSync()
+	const { categories } = useCategories()
 
 	return (
 		<SidebarProvider open={false}>
@@ -26,12 +28,16 @@ export function MainLayoutContent({ children }: { children: React.ReactNode }) {
 			<SidebarInset className="min-h-screen flex flex-col">
 				<HeaderTop />
 
-				<HeaderMiddle>
+				<HeaderMiddle categories={categories}>
 					<SidebarTrigger className="md:hidden hover:cursor-pointer" />
 				</HeaderMiddle>
 
 				<div className="container flex md:hidden items-center gap-3 ">
-					<InputSearch className=" max-w-full py-1" />
+					<InputSearch
+						className="max-w-full py-1"
+						showCategories={false}
+						categories={categories}
+					/>
 					<Button asChild>
 						<Link href="/ofertas">Ofertas!</Link>
 					</Button>

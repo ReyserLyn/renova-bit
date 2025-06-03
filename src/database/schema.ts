@@ -156,6 +156,10 @@ export const productsRelations = relations(products, ({ one, many }) => ({
 	}),
 	reviews: many(reviews),
 	wishlists: many(wishlists),
+	offer: one(offers, {
+		fields: [products.id],
+		references: [offers.product_id],
+	}),
 }))
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({
@@ -253,3 +257,42 @@ export const couponUsages = pgTable(
 		uniqueIndex('coupon_user_idx').on(table.coupon_id, table.user_id), // Un cupón por usuario
 	],
 ).enableRLS()
+
+export const offers = pgTable(
+	'offers',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		product_id: uuid('product_id')
+			.notNull()
+			.references(() => products.id, { onDelete: 'cascade' }),
+		offer_price: numeric('offer_price', { precision: 10, scale: 2 }).notNull(),
+		discount_percent: integer('discount_percent').notNull(),
+		start_date: timestamp('start_date', { withTimezone: true })
+			.defaultNow()
+			.notNull(),
+		end_date: timestamp('end_date', { withTimezone: true }).notNull(),
+		is_active: boolean('is_active').default(true).notNull(),
+		created_at: timestamp('created_at', { withTimezone: true })
+			.defaultNow()
+			.notNull(),
+		updated_at: timestamp('updated_at', { withTimezone: true })
+			.defaultNow()
+			.notNull(),
+	},
+	(table) => [
+		uniqueIndex('offers_product_idx').on(table.product_id),
+		check('offer_price_check', sql`${table.offer_price} >= 0`),
+		check(
+			'discount_percent_check',
+			sql`${table.discount_percent} > 0 AND ${table.discount_percent} <= 100`,
+		),
+		check('date_check', sql`${table.end_date} > ${table.start_date}`),
+	],
+).enableRLS()
+
+export const offersRelations = relations(offers, ({ one }) => ({
+	product: one(products, {
+		fields: [offers.product_id],
+		references: [products.id],
+	}),
+}))

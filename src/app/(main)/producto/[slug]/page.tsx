@@ -1,5 +1,6 @@
 import { ProductInfo } from '@/components/product/product-info'
 import { ReviewSection } from '@/components/product/review-section'
+import { ProductCard } from '@/components/shop/product-card'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -102,15 +103,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 					<Separator className="mb-8" />
 					<div className="space-y-6">
 						<h2 className="text-2xl font-bold">Productos relacionados</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
 							{relatedProducts.map((relatedProduct) => (
-								<div key={relatedProduct.id} className="space-y-2">
-									<div className="aspect-square bg-muted rounded-lg" />
-									<h4 className="font-medium">{relatedProduct.name}</h4>
-									<p className="text-sm text-muted-foreground">
-										S/{Number(relatedProduct.price).toFixed(2)}
-									</p>
-								</div>
+								<ProductCard key={relatedProduct.id} product={relatedProduct} />
 							))}
 						</div>
 					</div>
