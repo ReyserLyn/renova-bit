@@ -1,7 +1,11 @@
 'use client'
 
-import type { ProductFilters } from '@/lib/stores/filters-store'
-import type { BrandWithCount, CategoryWithCount, TransformedProduct } from '@/types'
+import type {
+	BrandWithCount,
+	CategoryWithCount,
+	ProductFilters,
+	TransformedProduct,
+} from '@/types'
 
 interface UseDynamicCountsOptions {
 	categories: CategoryWithCount[]
@@ -36,7 +40,7 @@ export function useDynamicCounts({
 			return false
 		}
 
-		if (filters.hasOffer && !product.hasOffer) {
+		if (filters.hasOffer && !product.offer) {
 			return false
 		}
 
@@ -45,7 +49,7 @@ export function useDynamicCounts({
 
 	const categoriesWithDynamicCounts = categories.map((category) => {
 		const count = filteredProducts.filter(
-			(product) => product.category === category.slug,
+			(product) => product.category?.slug === category.slug,
 		).length
 
 		return {
@@ -56,7 +60,7 @@ export function useDynamicCounts({
 
 	const brandsWithDynamicCounts = brands.map((brand) => {
 		const count = filteredProducts.filter(
-			(product) => product.brand === brand.slug,
+			(product) => product.brand?.slug === brand.slug,
 		).length
 
 		return {

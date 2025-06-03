@@ -8,7 +8,11 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { useDynamicCounts } from '@/hooks/useDynamicCounts'
 import { useFiltersSync } from '@/hooks/useFiltersSync'
-import type { BrandWithCount, CategoryWithCount, TransformedProduct } from '@/types'
+import type {
+	BrandWithCount,
+	CategoryWithCount,
+	TransformedProduct,
+} from '@/types'
 import {
 	ChevronDownIcon,
 	ChevronUpIcon,
@@ -57,7 +61,8 @@ const FilterItem = React.memo(
 				htmlFor={`${type}-${id}`}
 				className="text-sm font-normal flex-1 cursor-pointer hover:text-primary transition-colors"
 			>
-				{name}{count > 0 && ` (${count})`}
+				{name}
+				{count > 0 && ` (${count})`}
 			</Label>
 		</div>
 	),

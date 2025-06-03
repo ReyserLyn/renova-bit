@@ -49,7 +49,7 @@ export default function InputSearch({
 		e.preventDefault()
 
 		const params = new URLSearchParams()
-		
+
 		params.set('buscar', searchTerm.trim())
 
 		if (

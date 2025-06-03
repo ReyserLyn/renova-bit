@@ -1,17 +1,9 @@
 'use client'
 
+import type { ProductFilters } from '@/types'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-
-export interface ProductFilters {
-	search: string
-	categories: string[]
-	brands: string[]
-	priceRange: [number, number]
-	rating: number | null
-	hasOffer: boolean
-}
 
 interface FiltersState {
 	filters: ProductFilters

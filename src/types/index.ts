@@ -1,5 +1,6 @@
 export * from './product'
 
+// Tipo principal para filtros de productos
 export interface ProductFilters {
 	search: string
 	categories: string[]
@@ -9,6 +10,7 @@ export interface ProductFilters {
 	hasOffer: boolean
 }
 
+// Tipos para rangos y contadores
 export interface PriceRange {
 	min: number
 	max: number
@@ -31,9 +33,9 @@ export interface BrandWithCount {
 export interface TransformedProduct {
 	id: string
 	name: string
-	category: string
-	brand: string
+	category: { slug: string } | null
+	brand: { slug: string } | null
 	price: number
 	rating: number
-	hasOffer: boolean
-} 
+	offer: { offer_price: number } | null
+}

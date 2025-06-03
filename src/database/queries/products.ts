@@ -1,6 +1,6 @@
 import { db } from '@/database'
 import { brands, categories, offers, products } from '@/database/schema'
-import type { ProductFilters } from '@/lib/stores/filters-store'
+import type { ProductFilters } from '@/types'
 import {
 	and,
 	desc,
@@ -249,15 +249,6 @@ export async function getRelatedProducts(
 		},
 		limit,
 	})
-}
-
-/**
- * Obtener productos en oferta (productos con descuento)
- * TODO: Implementar cuando se añada lógica de ofertas al schema
- */
-export async function getOffersProducts() {
-	// Por ahora retornamos array vacío hasta implementar ofertas
-	return []
 }
 
 /**
