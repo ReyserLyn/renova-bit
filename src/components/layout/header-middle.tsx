@@ -34,7 +34,7 @@ function AuthSkeleton() {
 
 			<div className="flex lg:hidden border-r border-black/50 pr-4">
 				<div className="flex flex-col items-center">
-					<Skeleton className="h-5 w-5 rounded mb-1" />
+					<Skeleton className="h-5 w-5 rounded mb-2" />
 					<Skeleton className="h-3 w-12" />
 				</div>
 			</div>
