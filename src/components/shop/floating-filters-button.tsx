@@ -18,7 +18,7 @@ export const FloatingFiltersButton = forwardRef<
 		<Button
 			ref={ref}
 			{...props}
-			className={`fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ${
+			className={`fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 lg:hidden ${
 				hasActiveFilters
 					? 'bg-blue-600 hover:bg-blue-700'
 					: 'bg-primary hover:bg-primary/90'

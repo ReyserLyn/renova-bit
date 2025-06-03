@@ -132,24 +132,70 @@ export function ProductList({ products, viewMode }: ProductListProps) {
 
 										<div className="mb-4">
 											{product.offer ? (
-												<div className="flex items-center gap-3">
-													<span className="text-2xl font-bold text-red-600">
-														S/{' '}
-														{Number(product.offer.offer_price).toLocaleString()}
-													</span>
-													<span className="text-lg text-muted-foreground line-through">
-														S/ {Number(product.price).toLocaleString()}
-													</span>
-													{product.offer.discount_percent && (
-														<span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-															-{product.offer.discount_percent}%
+												<div className="flex flex-col gap-2">
+													<div className="flex items-center gap-3">
+														<span className="text-2xl font-bold text-red-600">
+															S/{' '}
+															{Number(
+																product.offer.offer_price,
+															).toLocaleString()}
 														</span>
-													)}
+														<span className="text-lg text-muted-foreground line-through">
+															S/ {Number(product.price).toLocaleString()}
+														</span>
+														{product.offer.discount_percent && (
+															<span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+																-{product.offer.discount_percent}%
+															</span>
+														)}
+													</div>
+													<div className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+														¡Oferta especial por tiempo limitado!
+													</div>
 												</div>
 											) : (
-												<span className="text-2xl font-bold">
-													S/ {Number(product.price).toLocaleString()}
-												</span>
+												<div className="flex flex-col gap-2">
+													<div className="flex items-center justify-between">
+														<span className="text-sm text-muted-foreground">
+															Precio normal:
+														</span>
+														<span className="text-lg line-through text-muted-foreground">
+															S/ {Number(product.price).toLocaleString()}
+														</span>
+													</div>
+													<div className="flex items-center justify-between">
+														<span className="text-lg font-semibold text-red-600 dark:text-red-400">
+															Precio web:
+														</span>
+														<span className="text-2xl font-bold text-red-600 dark:text-red-400">
+															S/ {Number(product.price_web).toLocaleString()}
+														</span>
+													</div>
+													<div className="flex items-center justify-between text-sm">
+														<span className="text-green-600 dark:text-green-400 font-medium">
+															Ahorras: S/{' '}
+															{(
+																Number(product.price) -
+																Number(product.price_web)
+															).toLocaleString()}
+														</span>
+														<Badge
+															variant="secondary"
+															className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+														>
+															{(
+																((Number(product.price) -
+																	Number(product.price_web)) /
+																	Number(product.price)) *
+																100
+															).toFixed(0)}
+															% OFF
+														</Badge>
+													</div>
+													<div className="text-sm text-green-600 dark:text-green-400 font-medium">
+														💰 ¡Precio web más barato! Compra online y ahorra
+													</div>
+												</div>
 											)}
 										</div>
 
