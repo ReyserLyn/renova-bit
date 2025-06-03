@@ -68,10 +68,30 @@ export default function LegalPageLayout({
 					</CardContent>
 				</Card>
 
+				{/* Índice de Contenidos - Solo en móviles, arriba del contenido */}
+				<Card className="mb-8 lg:hidden">
+					<CardHeader>
+						<CardTitle className="text-lg">Índice de Contenidos</CardTitle>
+					</CardHeader>
+					<CardContent className="p-4">
+						<nav className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+							{sections.map((section) => (
+								<a
+									key={section.id}
+									href={`#${section.id}`}
+									className="block text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-primary/5 border border-transparent hover:border-primary/20"
+								>
+									{section.title}
+								</a>
+							))}
+						</nav>
+					</CardContent>
+				</Card>
+
 				{/* Contenido Principal */}
 				<div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-					{/* Índice de Contenidos */}
-					<Card className="lg:col-span-1 h-fit sticky top-8">
+					{/* Índice de Contenidos - Solo en desktop, con sticky */}
+					<Card className="hidden lg:block lg:col-span-1 h-fit lg:sticky lg:top-8">
 						<CardHeader>
 							<CardTitle className="text-lg">Índice de Contenidos</CardTitle>
 						</CardHeader>
@@ -91,7 +111,7 @@ export default function LegalPageLayout({
 					</Card>
 
 					{/* Contenido */}
-					<div className="lg:col-span-3 space-y-8">
+					<div className="col-span-1 lg:col-span-3 space-y-8">
 						{sections.map((section) => (
 							<Card key={section.id} id={section.id} className="scroll-mt-20">
 								<CardHeader>

@@ -4,12 +4,18 @@ import {
 	Box,
 	Computer,
 	CreditCard,
+	FileText,
+	HelpCircle,
+	Info,
 	Laptop,
 	type LucideIcon,
+	MessageCircle,
 	Microchip,
 	Mouse,
-	PhoneCall,
+	Shield,
 	Tag,
+	Truck,
+	Users,
 } from 'lucide-react'
 import type { IconType } from 'react-icons/lib'
 import { TbBrandAmd } from 'react-icons/tb'
@@ -24,10 +30,13 @@ export type navMainItemType = {
 		url?: string
 	}[]
 }
+
 export type navSecondaryItemType = {
 	name: string
 	url: string
 	icon: LucideIcon | IconType
+	category?: 'tienda' | 'servicio' | 'empresa' | 'legal'
+	description?: string
 }
 
 export type NavOptionsType = {
@@ -266,25 +275,120 @@ export const navOptions: NavOptionsType = {
 		},
 	],
 	navSecondary: [
+		// Tienda y Servicios
 		{
 			name: 'Ofertas!',
 			url: '/ofertas',
 			icon: Tag,
+			category: 'tienda',
+			description: 'Mejores descuentos y promociones',
 		},
 		{
-			name: 'Proformas / Ensambles',
+			name: 'Proformas',
 			url: '/proforma',
 			icon: Box,
+			category: 'tienda',
+			description: 'Cotizaciones y ensambles personalizados',
 		},
 		{
-			name: 'Formas de pago',
+			name: 'Formas de Pago',
 			url: '/formas-de-pago',
 			icon: CreditCard,
+			category: 'servicio',
+			description: 'Métodos de pago disponibles',
 		},
 		{
-			name: 'Atención al cliente',
-			url: '/atencion-al-cliente',
-			icon: PhoneCall,
+			name: 'Envíos',
+			url: '/politica-envios',
+			icon: Truck,
+			category: 'servicio',
+			description: 'Delivery gratis fines de semana',
+		},
+		{
+			name: 'Devoluciones',
+			url: '/politica-devoluciones',
+			icon: Shield,
+			category: 'servicio',
+			description: 'Garantías y política de cambios',
+		},
+
+		// Empresa y Contacto
+		{
+			name: 'Sobre Nosotros',
+			url: '/sobre-nosotros',
+			icon: Users,
+			category: 'empresa',
+			description: 'Conoce nuestra historia y misión',
+		},
+		{
+			name: 'Contacto',
+			url: '/contacto',
+			icon: MessageCircle,
+			category: 'empresa',
+			description: 'Atención al cliente y soporte técnico',
+		},
+		{
+			name: 'Ayuda',
+			url: '/contacto',
+			icon: HelpCircle,
+			category: 'servicio',
+			description: 'Centro de ayuda y soporte',
+		},
+
+		// Legal y Políticas
+		{
+			name: 'Términos y Condiciones',
+			url: '/terminos-condiciones',
+			icon: FileText,
+			category: 'legal',
+			description: 'Condiciones de uso y compra',
+		},
+		{
+			name: 'Política de Privacidad',
+			url: '/politica-privacidad',
+			icon: Shield,
+			category: 'legal',
+			description: 'Protección de datos personales',
+		},
+		{
+			name: 'Información Legal',
+			url: '/terminos-condiciones',
+			icon: Info,
+			category: 'legal',
+			description: 'Información legal y normativas',
 		},
 	],
+}
+
+// Función helper para filtrar por categoría
+export const getNavItemsByCategory = (
+	category: navSecondaryItemType['category'],
+) => {
+	return navOptions.navSecondary.filter((item) => item.category === category)
+}
+
+// Función helper para obtener todas las páginas legales
+export const getLegalPages = () => {
+	return [
+		{
+			name: 'Términos y Condiciones',
+			url: '/terminos-condiciones',
+			description: 'Condiciones de uso del sitio web y compra de productos',
+		},
+		{
+			name: 'Política de Privacidad',
+			url: '/politica-privacidad',
+			description: 'Cómo protegemos y utilizamos tus datos personales',
+		},
+		{
+			name: 'Política de Envíos',
+			url: '/politica-envios',
+			description: 'Información sobre entregas y delivery gratuito',
+		},
+		{
+			name: 'Política de Devoluciones',
+			url: '/politica-devoluciones',
+			description: 'Garantías, cambios y servicio post-venta',
+		},
+	]
 }
