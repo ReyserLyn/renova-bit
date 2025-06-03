@@ -85,9 +85,6 @@ export const useFiltersStore = create<FiltersStore>()(
 			},
 
 			updateFilter: (key, value) => {
-				const state = get()
-				if (state.isUpdatingFromUrl) return
-
 				set((state) => {
 					state.filters[key] = value as any
 				})

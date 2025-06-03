@@ -4,7 +4,8 @@ import {
 	useFilters,
 	useFiltersActions,
 	useHasActiveFilters,
-	useLocalPriceRange,
+	useIsUpdatingFromUrl,
+	useLocalPriceRange
 } from '@/lib/stores/filters-store'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
@@ -20,11 +21,14 @@ export function useFiltersSync({ priceRange }: UseFiltersSyncOptions) {
 	const searchParams = useSearchParams()
 	const initialized = useRef(false)
 	const lastUrlRef = useRef('')
+	const lastSearchTerm = useRef('')
+	const userIsTyping = useRef(false)
 
 	const filters = useFilters()
 	const localPriceRange = useLocalPriceRange()
 	const hasActiveFilters = useHasActiveFilters()
 	const actions = useFiltersActions()
+	const isUpdatingFromUrl = useIsUpdatingFromUrl()
 
 	useEffect(() => {
 		if (initialized.current) return
@@ -49,8 +53,35 @@ export function useFiltersSync({ priceRange }: UseFiltersSyncOptions) {
 
 		actions.setPriceRange(priceRange)
 		actions.setFilters(initialFilters)
+		lastSearchTerm.current = initialFilters.search
 		initialized.current = true
 	}, [])
+
+	useEffect(() => {
+		if (!initialized.current) return
+		
+		const currentSearchTerm = searchParams.get('buscar') || ''
+		const currentCategories = searchParams.get('categorias')?.split(',').filter(Boolean) || []
+		
+		if (currentSearchTerm !== lastSearchTerm.current && !userIsTyping.current) {
+			console.log('Sincronizando búsqueda desde URL (header):', currentSearchTerm, 'Categorías:', currentCategories) // Debug temporal
+			actions.setIsUpdatingFromUrl(true)
+			
+			const cleanFilters = {
+				search: currentSearchTerm,
+				categories: currentCategories,
+				brands: [],
+				priceRange: [priceRange.min, priceRange.max] as [number, number],
+				rating: null,
+				hasOffer: false,
+			}
+			
+			actions.setFilters(cleanFilters)
+			actions.setLocalPriceRange([priceRange.min, priceRange.max])
+			actions.setIsUpdatingFromUrl(false)
+			lastSearchTerm.current = currentSearchTerm
+		}
+	}, [searchParams, actions, priceRange])
 
 	const buildUrl = useCallback(
 		(currentFilters: any, currentPriceRange: any) => {
@@ -90,6 +121,7 @@ export function useFiltersSync({ priceRange }: UseFiltersSyncOptions) {
 
 				if (newUrl !== lastUrlRef.current) {
 					lastUrlRef.current = newUrl
+					lastSearchTerm.current = currentFilters.search
 					router.replace(newUrl, { scroll: false })
 				}
 			},
@@ -101,11 +133,22 @@ export function useFiltersSync({ priceRange }: UseFiltersSyncOptions) {
 
 	useEffect(() => {
 		if (!initialized.current) return
+		
+		if (isUpdatingFromUrl) return
+		
 		debouncedNavigate(filters, priceRange)
-	}, [filters, priceRange, debouncedNavigate])
+	}, [filters, priceRange, debouncedNavigate, actions, isUpdatingFromUrl])
 
 	const stableUpdateFilter = useCallback(
 		(key: any, value: any) => {
+			if (key === 'search') {
+				console.log('Búsqueda desde panel:', value)
+				userIsTyping.current = true
+				lastSearchTerm.current = value
+				setTimeout(() => {
+					userIsTyping.current = false
+				}, 500)
+			}
 			actions.updateFilter(key, value)
 		},
 		[actions],

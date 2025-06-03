@@ -48,10 +48,8 @@ export default function InputSearch({
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault()
 
-		if (!searchTerm.trim()) return
-
-		// Construir la URL de búsqueda SIN marcador problemático
 		const params = new URLSearchParams()
+		
 		params.set('buscar', searchTerm.trim())
 
 		if (
@@ -66,7 +64,6 @@ export default function InputSearch({
 
 		const newUrl = `/busqueda?${params.toString()}`
 
-		// Navegar y limpiar inmediatamente
 		router.push(newUrl)
 		setSearchTerm('')
 		setSelectedCategory('Todos')
@@ -147,8 +144,7 @@ export default function InputSearch({
 
 					<button
 						type="submit"
-						className="text-muted-foreground hover:text-foreground absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md outline-none focus:z-10 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-						disabled={!searchTerm.trim()}
+						className="text-muted-foreground hover:text-foreground absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md outline-none focus:z-10 focus-visible:ring-2 focus-visible:ring-ring"
 					>
 						<ArrowRightIcon size={16} />
 					</button>

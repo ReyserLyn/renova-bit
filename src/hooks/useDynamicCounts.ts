@@ -1,35 +1,12 @@
 'use client'
 
 import type { ProductFilters } from '@/lib/stores/filters-store'
-
-interface Category {
-	id: string
-	name: string
-	slug: string
-	productCount: number
-}
-
-interface Brand {
-	id: string
-	name: string
-	slug: string
-	productCount: number
-}
-
-interface Product {
-	id: string
-	name: string
-	category: string
-	brand: string
-	price: number
-	rating: number
-	hasOffer: boolean
-}
+import type { BrandWithCount, CategoryWithCount, TransformedProduct } from '@/types'
 
 interface UseDynamicCountsOptions {
-	categories: Category[]
-	brands: Brand[]
-	products?: Product[]
+	categories: CategoryWithCount[]
+	brands: BrandWithCount[]
+	products?: TransformedProduct[]
 	filters: ProductFilters
 }
 

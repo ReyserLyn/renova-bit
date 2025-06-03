@@ -5,9 +5,8 @@ import { SearchToolbar } from '@/components/shop/search-toolbar'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { getCategoryBySlug } from '@/database/queries/categories'
 import { getCategoryPageData } from '@/database/queries/products'
-import type { ProductFilters as ProductFiltersType } from '@/lib/stores/filters-store'
-import { sortProducts } from '@/lib/utils/sort-products'
-import { transformProductsForFilters } from '@/lib/utils/transform-products'
+import type { ProductFilters } from '@/lib/stores/filters-store'
+import { sortProducts, transformProductsForFilters } from '@/lib/utils/index'
 import type { Metadata } from 'next'
 import { cache } from 'react'
 
@@ -17,7 +16,7 @@ interface CategoryPageProps {
 }
 
 const getCachedCategoryData = cache(
-	async (slug: string, filters: ProductFiltersType) => {
+	async (slug: string, filters: ProductFilters) => {
 		return await getCategoryPageData(slug, filters)
 	},
 )
@@ -56,7 +55,7 @@ export default async function CategoryPage({
 
 	const categoryData = category[0]
 
-	const filters: ProductFiltersType = {
+	const filters: ProductFilters = {
 		search: (searchParamsResolved.buscar as string) || '',
 		categories: [slug],
 		brands: searchParamsResolved.marcas

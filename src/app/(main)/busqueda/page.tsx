@@ -7,7 +7,7 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { getSearchPageData } from '@/database/queries/products'
-import type { ProductFilters as ProductFiltersType } from '@/lib/stores/filters-store'
+import type { ProductFilters } from '@/lib/stores/filters-store'
 import { sortProducts } from '@/lib/utils/sort-products'
 import { transformProductsForFilters } from '@/lib/utils/transform-products'
 import { SearchIcon, SlidersHorizontalIcon } from 'lucide-react'
@@ -40,7 +40,7 @@ export async function generateMetadata({
 export default async function SearchPage({ searchParams }: SearchPageProps) {
 	const params = await searchParams
 
-	const filters: ProductFiltersType = {
+	const filters: ProductFilters = {
 		search: (params.buscar as string) || '',
 		categories: params.categorias
 			? (params.categorias as string).split(',').filter(Boolean)

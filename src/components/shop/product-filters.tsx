@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { useDynamicCounts } from '@/hooks/useDynamicCounts'
 import { useFiltersSync } from '@/hooks/useFiltersSync'
+import type { BrandWithCount, CategoryWithCount, TransformedProduct } from '@/types'
 import {
 	ChevronDownIcon,
 	ChevronUpIcon,
@@ -17,38 +18,14 @@ import {
 } from 'lucide-react'
 import React, { useState } from 'react'
 
-interface Category {
-	id: string
-	name: string
-	slug: string
-	productCount: number
-}
-
-interface Brand {
-	id: string
-	name: string
-	slug: string
-	productCount: number
-}
-
-interface Product {
-	id: string
-	name: string
-	category: { slug: string } | null
-	brand: { slug: string } | null
-	price: number
-	rating?: number
-	offer?: { offer_price: number } | null
-}
-
 interface ProductFiltersProps {
-	categories: Category[]
-	brands: Brand[]
+	categories: CategoryWithCount[]
+	brands: BrandWithCount[]
 	priceRange: {
 		min: number
 		max: number
 	}
-	products?: Product[]
+	products?: TransformedProduct[]
 }
 
 const FilterItem = React.memo(
@@ -80,7 +57,7 @@ const FilterItem = React.memo(
 				htmlFor={`${type}-${id}`}
 				className="text-sm font-normal flex-1 cursor-pointer hover:text-primary transition-colors"
 			>
-				{name} ({count})
+				{name}{count > 0 && ` (${count})`}
 			</Label>
 		</div>
 	),
@@ -105,21 +82,11 @@ const ProductFilters: React.FC<ProductFiltersProps> = React.memo(
 			commitPriceRange,
 		} = useFiltersSync({ priceRange })
 
-		const transformedProducts = products.map((product) => ({
-			id: product.id,
-			name: product.name,
-			category: product.category?.slug || '',
-			brand: product.brand?.slug || '',
-			price: product.offer?.offer_price || product.price,
-			rating: product.rating || 0,
-			hasOffer: !!product.offer,
-		}))
-
 		const { categories: dynamicCategories, brands: dynamicBrands } =
 			useDynamicCounts({
 				categories,
 				brands,
-				products: transformedProducts,
+				products,
 				filters,
 			})
 
