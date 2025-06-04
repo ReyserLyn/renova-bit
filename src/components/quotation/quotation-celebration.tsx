@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
 import type { QuotationSummary } from '@/types/quotation'
 import { motion } from 'framer-motion'
@@ -113,11 +113,12 @@ export function QuotationCelebration({
 					animate={{ scale: 1, opacity: 1 }}
 					exit={{ scale: 0.8, opacity: 0 }}
 					transition={{ type: 'spring', bounce: 0.3, duration: 0.5 }}
-					className="w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col"
+					className="w-full max-w-lg"
 					onClick={(e) => e.stopPropagation()}
+					style={{ maxHeight: '80vh' }}
 				>
-					<Card className="border-2 bg-card shadow-2xl h-full flex flex-col">
-						<CardHeader className="text-center pb-3 sm:pb-4 relative flex-shrink-0">
+					<Card className="border-2 bg-card shadow-2xl">
+						<CardHeader className="text-center pb-3 sm:pb-4 relative">
 							{/* Botón de cerrar */}
 							<Button
 								variant="ghost"
@@ -162,8 +163,11 @@ export function QuotationCelebration({
 							</p>
 						</CardHeader>
 
-						<CardContent className="flex-1 overflow-y-auto px-4 sm:px-6">
-							<div className="space-y-4 sm:space-y-6">
+						<div
+							className="px-4 sm:px-6 overflow-y-auto"
+							style={{ maxHeight: 'calc(80vh - 200px)' }}
+						>
+							<div className="space-y-4 sm:space-y-6 py-2">
 								{/* Resumen de precios */}
 								<div className="grid grid-cols-2 gap-3 sm:gap-4">
 									<div className="text-center p-3 sm:p-4 bg-muted/30 rounded-lg">
@@ -228,7 +232,7 @@ export function QuotationCelebration({
 									<h4 className="font-medium text-xs sm:text-sm">
 										Tu configuración:
 									</h4>
-									<div className="max-h-28 sm:max-h-40 overflow-y-auto space-y-1">
+									<div className="space-y-1">
 										{summary.components.map((component) => (
 											<div
 												key={component.componentType}
@@ -256,7 +260,7 @@ export function QuotationCelebration({
 									</div>
 								</div>
 							</div>
-						</CardContent>
+						</div>
 					</Card>
 				</motion.div>
 			</motion.div>
