@@ -185,6 +185,11 @@ export default function QuotationBuilderPage() {
 	const handleResetBuilder = () => {
 		resetBuilder()
 		toast.info('Builder reiniciado')
+
+		// Scroll hacia arriba en móvil (md y menores)
+		if (window.innerWidth < 768) {
+			window.scrollTo({ top: 0, behavior: 'smooth' })
+		}
 	}
 
 	const handleDownloadQuotation = () => {
@@ -525,7 +530,7 @@ export default function QuotationBuilderPage() {
 											</Link>
 										</Button>
 										<Button variant="ghost" size="sm" asChild>
-											<Link href="https://wa.me/51999999999" target="_blank">
+											<Link href="https://wa.me/51987471074" target="_blank">
 												💬 WhatsApp
 											</Link>
 										</Button>
