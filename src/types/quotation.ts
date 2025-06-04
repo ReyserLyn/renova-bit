@@ -187,6 +187,9 @@ export interface QuotationBuilderActions {
 	requestQuotation: (notes?: string) => Promise<void>
 	downloadQuotation: () => void
 	shareQuotation: () => void
+
+	// Utilidades
+	autoSkipEmptyComponents: () => void
 }
 
 export interface ProductForSelection {

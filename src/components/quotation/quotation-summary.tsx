@@ -34,7 +34,6 @@ interface QuotationSummaryProps {
 	onUpdateQuantity: (componentType: string, quantity: number) => void
 	onRequestQuotation: () => void
 	onResetBuilder: () => void
-	onOpenCelebration?: () => void
 	className?: string
 }
 
@@ -46,7 +45,6 @@ export function QuotationSummary({
 	onUpdateQuantity,
 	onRequestQuotation,
 	onResetBuilder,
-	onOpenCelebration,
 	className,
 }: QuotationSummaryProps) {
 	const selectedComponents = summary.components.filter(
@@ -105,6 +103,16 @@ export function QuotationSummary({
 						<div className="text-sm text-muted-foreground font-medium">
 							Precio Web
 						</div>
+						{summary.totalComponents > 0 && (
+							<Button
+								className="w-full mt-3"
+								size="sm"
+								onClick={onRequestQuotation}
+							>
+								<CheckCircleIcon className="h-4 w-4 mr-2" />
+								Solicitar Proforma
+							</Button>
+						)}
 					</div>
 				</div>
 
@@ -361,25 +369,14 @@ export function QuotationSummary({
 						>
 							Reiniciar
 						</Button>
-						{onOpenCelebration && summary.totalComponents > 0 ? (
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={onOpenCelebration}
-								className="cursor-pointer"
-							>
-								Ver Resumen
-							</Button>
-						) : (
-							<Button
-								variant="outline"
-								size="sm"
-								asChild
-								className="cursor-pointer"
-							>
-								<Link href="/contacto">Consultar</Link>
-							</Button>
-						)}
+						<Button
+							variant="outline"
+							size="sm"
+							asChild
+							className="cursor-pointer"
+						>
+							<Link href="/contacto">Consultar</Link>
+						</Button>
 					</div>
 				</div>
 

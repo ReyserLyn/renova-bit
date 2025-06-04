@@ -339,6 +339,44 @@ export const useQuotationBuilder = create<QuotationBuilderStore>()(
 				console.log('Compartiendo proforma...', state.summary)
 				// TODO: Implementar compartir
 			},
+
+			// Auto-omitir componentes vacíos
+			autoSkipEmptyComponents: () => {
+				set((state) => {
+					for (const step of QUOTATION_STEPS) {
+						const componentType = step.id as ComponentType
+						const component = state.components[componentType]
+
+						// Si es opcional y no tiene producto seleccionado (o está null), marcarlo como omitido
+						if (step.isOptional && (!component || component.isSkipped)) {
+							state.components[componentType] = {
+								componentType,
+								product: {
+									id: '',
+									name: 'Componente omitido',
+									slug: '',
+									image_url: '',
+									price: '0',
+									price_web: '0',
+									brand: { id: '', name: '', slug: '' },
+									category: { id: '', name: '', slug: '' },
+									short_description: '',
+									stock: 0,
+								},
+								quantity: 0,
+								unitPrice: 0,
+								unitWebPrice: 0,
+								totalPrice: 0,
+								totalWebPrice: 0,
+								isOptional: true,
+								isSkipped: true,
+								addedAt: new Date(),
+							}
+						}
+					}
+					state.summary = calculateSummary(state.components)
+				})
+			},
 		})),
 		{
 			name: 'quotation-builder',
@@ -437,6 +475,7 @@ export const useQuotationActions = () => {
 				requestQuotation: store.requestQuotation,
 				downloadQuotation: store.downloadQuotation,
 				shareQuotation: store.shareQuotation,
+				autoSkipEmptyComponents: store.autoSkipEmptyComponents,
 			})
 		}
 	}, [])
@@ -461,6 +500,7 @@ export const useQuotationActions = () => {
 			requestQuotation: async () => {},
 			downloadQuotation: () => {},
 			shareQuotation: () => {},
+			autoSkipEmptyComponents: () => {},
 		}
 	)
 }

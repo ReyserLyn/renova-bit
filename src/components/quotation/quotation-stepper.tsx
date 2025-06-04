@@ -32,7 +32,7 @@ export function QuotationStepper({
 	return (
 		<div className={cn('w-full space-y-6', className)}>
 			{/* Stepper vertical - Desktop */}
-			<div className={cn('hidden lg:block', forceDesktopLayout && 'block')}>
+			<div className={cn('hidden md:block', forceDesktopLayout && 'block')}>
 				<div className="space-y-1">
 					{steps.map((step, index) => {
 						const stepNumber = index + 1

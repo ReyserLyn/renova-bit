@@ -37,17 +37,34 @@ export function QuotationCelebration({
 	useEffect(() => {
 		if (show) {
 			setShowConfetti(true)
-			setDimensions({
-				width: window.innerWidth,
-				height: window.innerHeight,
-			})
 
-			// Detener confetti después de 3 segundos
+			// Prevenir scroll del body
+			document.body.style.overflow = 'hidden'
+
+			const updateDimensions = () => {
+				setDimensions({
+					width: window.innerWidth,
+					height: window.innerHeight,
+				})
+			}
+
+			// Establecer dimensiones iniciales
+			updateDimensions()
+
+			// Listener para cambios de tamaño de ventana
+			window.addEventListener('resize', updateDimensions)
+
+			// Detener confetti después de 5 segundos (más tiempo para disfrutar)
 			const timer = setTimeout(() => {
 				setShowConfetti(false)
-			}, 3000)
+			}, 5000)
 
-			return () => clearTimeout(timer)
+			return () => {
+				clearTimeout(timer)
+				window.removeEventListener('resize', updateDimensions)
+				// Restaurar scroll del body
+				document.body.style.overflow = 'unset'
+			}
 		}
 	}, [show])
 
@@ -55,15 +72,32 @@ export function QuotationCelebration({
 
 	return (
 		<>
-			{/* Confetti */}
+			{/* Confetti - Fuera del modal para evitar cortes */}
 			{showConfetti && (
-				<Confetti
-					width={dimensions.width}
-					height={dimensions.height}
-					recycle={false}
-					numberOfPieces={200}
-					gravity={0.1}
-				/>
+				<div className="fixed inset-0 z-40 pointer-events-none">
+					<Confetti
+						width={dimensions.width}
+						height={dimensions.height}
+						recycle={false}
+						numberOfPieces={200}
+						gravity={0.15}
+						friction={0.99}
+						wind={0.02}
+						initialVelocityX={5}
+						initialVelocityY={-20}
+						colors={[
+							'#FFD700', // Dorado
+							'#FF6B6B', // Rojo coral
+							'#4ECDC4', // Verde agua
+							'#45B7D1', // Azul cielo
+							'#96CEB4', // Verde menta
+							'#FFEAA7', // Amarillo suave
+							'#DDA0DD', // Violeta
+							'#98D8C8', // Verde claro
+						]}
+						tweenDuration={3000}
+					/>
+				</div>
 			)}
 
 			{/* Modal de celebración */}

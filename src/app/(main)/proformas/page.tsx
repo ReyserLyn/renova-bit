@@ -30,6 +30,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
 	ArrowLeftIcon,
 	ArrowRightIcon,
+	CheckIcon,
 	HelpCircleIcon,
 	ListIcon,
 	MessageCircleIcon,
@@ -78,6 +79,7 @@ export default function QuotationBuilderPage() {
 		updateQuantity,
 		resetBuilder,
 		requestQuotation,
+		autoSkipEmptyComponents,
 	} = useQuotationActions()
 
 	const [searchTerm, setSearchTerm] = useState('')
@@ -172,6 +174,7 @@ export default function QuotationBuilderPage() {
 		}
 
 		try {
+			autoSkipEmptyComponents()
 			setShowCelebration(true)
 			await requestQuotation()
 		} catch (error) {
@@ -206,21 +209,8 @@ export default function QuotationBuilderPage() {
 		setShowCelebration(false)
 	}
 
-	const handleCelebrationRequestQuotation = () => {
-		setShowCelebration(false)
-		handleRequestQuotation()
-	}
-
 	const handleCloseCelebration = () => {
 		setShowCelebration(false)
-	}
-
-	const handleOpenCelebration = () => {
-		if (summary.totalComponents === 0) {
-			toast.error('Agrega al menos 1 componente para ver el resumen')
-			return
-		}
-		setShowCelebration(true)
 	}
 
 	if (!currentStepData) {
@@ -327,10 +317,10 @@ export default function QuotationBuilderPage() {
 						</div>
 
 						{/* Layout responsivo */}
-						<div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
+						<div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-6 lg:gap-8">
 							{/* Sidebar izquierdo - Stepper */}
 							<div className="xl:col-span-3 order-1 xl:order-1">
-								<div className="hidden lg:block">
+								<div className="hidden md:block">
 									<QuotationStepper
 										steps={useQuotationBuilder.getState().steps}
 										currentStep={currentStep}
@@ -342,7 +332,7 @@ export default function QuotationBuilderPage() {
 							</div>
 
 							{/* Contenido principal - Selector */}
-							<div className="xl:col-span-6 order-2 xl:order-2">
+							<div className="sm:col-span-2 md:col-span-2 lg:col-span-3 xl:col-span-6 order-2 xl:order-2 ">
 								<AnimatePresence mode="wait">
 									<motion.div
 										key={currentStep}
@@ -395,18 +385,31 @@ export default function QuotationBuilderPage() {
 														</div>
 													</div>
 
-													<Button
-														onClick={nextStep}
-														disabled={
-															currentStep ===
-															useQuotationBuilder.getState().steps.length
-														}
-														className="flex items-center gap-2"
-														size="sm"
-													>
-														<span className="hidden sm:inline">Siguiente</span>
-														<ArrowRightIcon className="h-4 w-4" />
-													</Button>
+													{currentStep ===
+													useQuotationBuilder.getState().steps.length ? (
+														<Button
+															onClick={handleRequestQuotation}
+															className="flex items-center gap-2"
+															size="sm"
+														>
+															<CheckIcon className="h-4 w-4" />
+															<span className="hidden sm:inline">
+																Solicitar Proforma
+															</span>
+															<span className="sm:hidden">Solicitar</span>
+														</Button>
+													) : (
+														<Button
+															onClick={nextStep}
+															className="flex items-center gap-2"
+															size="sm"
+														>
+															<span className="hidden sm:inline">
+																Siguiente
+															</span>
+															<ArrowRightIcon className="h-4 w-4" />
+														</Button>
+													)}
 												</div>
 											</CardContent>
 										</Card>
@@ -415,7 +418,7 @@ export default function QuotationBuilderPage() {
 							</div>
 
 							{/* Sidebar derecho - Resumen */}
-							<div className="xl:col-span-3 order-3 xl:order-3">
+							<div className="xl:col-span-3 order-3 xl:order-3 lg:col-span-4 lg:order-2">
 								<div className="hidden lg:block space-y-6">
 									<QuotationSummary
 										summary={summary}
@@ -424,7 +427,6 @@ export default function QuotationBuilderPage() {
 										onUpdateQuantity={handleUpdateQuantity}
 										onRequestQuotation={handleRequestQuotation}
 										onResetBuilder={handleResetBuilder}
-										onOpenCelebration={handleOpenCelebration}
 									/>
 
 									{/* Panel de ayuda */}
@@ -498,7 +500,6 @@ export default function QuotationBuilderPage() {
 								onUpdateQuantity={handleUpdateQuantity}
 								onRequestQuotation={handleRequestQuotation}
 								onResetBuilder={handleResetBuilder}
-								onOpenCelebration={handleOpenCelebration}
 							/>
 						</div>
 
@@ -597,7 +598,7 @@ export default function QuotationBuilderPage() {
 					{/* Celebración cuando se solicita la proforma */}
 					<QuotationCelebration
 						summary={summary}
-						onRequestQuotation={handleCelebrationRequestQuotation}
+						onRequestQuotation={handleRequestQuotation}
 						onDownload={handleDownloadQuotation}
 						onShare={handleShareQuotation}
 						onClose={handleCloseCelebration}
