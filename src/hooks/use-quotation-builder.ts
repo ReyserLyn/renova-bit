@@ -13,6 +13,16 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
+const useHydrated = () => {
+	const [hydrated, setHydrated] = useState(false)
+
+	useEffect(() => {
+		setHydrated(true)
+	}, [])
+
+	return hydrated
+}
+
 const initialSummary: QuotationSummary = {
 	totalComponents: 0,
 	totalPrice: 0,
@@ -51,7 +61,6 @@ const initialState: QuotationBuilderState = {
 	autoAdvanceStep: true,
 }
 
-// Función para calcular el resumen
 const calculateSummary = (
 	components: Record<ComponentType, SelectedComponent | null>,
 ): QuotationSummary => {
@@ -71,8 +80,6 @@ const calculateSummary = (
 	const estimatedSavingsPercent =
 		totalPrice > 0 ? Math.round((totalSavings / totalPrice) * 100) : 0
 
-	// Ahora que todos los pasos son opcionales, se considera completada si tiene al menos 1 componente
-	// La celebración solo se mostrará cuando el usuario solicite manualmente la proforma
 	const isComplete = selectedComponents.length > 0
 
 	return {
@@ -105,7 +112,6 @@ export const useQuotationBuilder = create<QuotationBuilderStore>()(
 
 			nextStep: () => {
 				set((state) => {
-					// Si el paso actual es opcional y no tiene componente seleccionado, lo marcamos como omitido
 					const currentStepConfig = QUOTATION_STEPS.find(
 						(step) => step.order === state.currentStep,
 					)
@@ -419,60 +425,64 @@ export const useQuotationBuilder = create<QuotationBuilderStore>()(
 	),
 )
 
-// Hooks individuales que NO usan el store directamente para evitar hidratación
+// Hooks individuales que usan hidratación para evitar problemas de SSR
 export const useCurrentStep = () => {
+	const hydrated = useHydrated()
 	const [step, setStep] = useState(1)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
+		if (hydrated) {
 			const unsubscribe = useQuotationBuilder.subscribe((state) =>
 				setStep(state.currentStep),
 			)
 			setStep(useQuotationBuilder.getState().currentStep)
 			return unsubscribe
 		}
-	}, [])
+	}, [hydrated])
 
 	return step
 }
 
 export const useQuotationSummary = () => {
+	const hydrated = useHydrated()
 	const [summary, setSummary] = useState<QuotationSummary>(initialSummary)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
+		if (hydrated) {
 			const unsubscribe = useQuotationBuilder.subscribe((state) =>
 				setSummary(state.summary),
 			)
 			setSummary(useQuotationBuilder.getState().summary)
 			return unsubscribe
 		}
-	}, [])
+	}, [hydrated])
 
 	return summary
 }
 
 export const useSelectedComponents = () => {
+	const hydrated = useHydrated()
 	const [components, setComponents] = useState(initialState.components)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
+		if (hydrated) {
 			const unsubscribe = useQuotationBuilder.subscribe((state) =>
 				setComponents(state.components),
 			)
 			setComponents(useQuotationBuilder.getState().components)
 			return unsubscribe
 		}
-	}, [])
+	}, [hydrated])
 
 	return components
 }
 
 export const useQuotationActions = () => {
+	const hydrated = useHydrated()
 	const [actions, setActions] = useState<QuotationBuilderActions | null>(null)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
+		if (hydrated) {
 			const store = useQuotationBuilder.getState()
 			setActions({
 				goToStep: store.goToStep,
@@ -496,9 +506,9 @@ export const useQuotationActions = () => {
 				initializeBuilder: store.initializeBuilder,
 			})
 		}
-	}, [])
+	}, [hydrated])
 
-	// Funciones por defecto que no hacen nada si no está en el cliente
+	// Funciones por defecto que no hacen nada si no está hidratado
 	return (
 		actions || {
 			goToStep: () => {},

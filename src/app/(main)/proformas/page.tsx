@@ -86,7 +86,9 @@ export default function QuotationBuilderPage() {
 	const [searchTerm, setSearchTerm] = useState('')
 
 	useEffect(() => {
-		initializeBuilder()
+		if (initializeBuilder) {
+			initializeBuilder()
+		}
 	}, [initializeBuilder])
 
 	useEffect(() => {
