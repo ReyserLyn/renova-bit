@@ -182,7 +182,7 @@ export default function Footer() {
 							<h3 className="font-semibold text-base">{section.title}</h3>
 							<ul className="space-y-2">
 								{section.links.map((link) => (
-									<li key={link.href}>
+									<li key={`${link.label}-${link.href}`}>
 										<Link
 											href={link.href}
 											className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -223,13 +223,16 @@ export default function Footer() {
 						</p>
 					</div>
 					<div className="flex items-center gap-4 text-xs">
-						<Link href="/privacidad" className="hover:text-foreground">
+						<Link href="/politica-privacidad" className="hover:text-foreground">
 							Privacidad
 						</Link>
-						<Link href="/terminos" className="hover:text-foreground">
+						<Link
+							href="/terminos-condiciones"
+							className="hover:text-foreground"
+						>
 							Términos
 						</Link>
-						<Link href="/cookies" className="hover:text-foreground">
+						<Link href="/politica-cookies" className="hover:text-foreground">
 							Cookies
 						</Link>
 					</div>

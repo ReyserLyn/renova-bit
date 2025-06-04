@@ -128,7 +128,7 @@ export default function Navbar({ className }: { className?: string }) {
 						<NavigationMenuItem>
 							<NavigationMenuLink asChild>
 								<Button asChild className="hover:bg-green-200">
-									<Link href="/proforma">Proformas</Link>
+									<Link href="/proformas">Proformas</Link>
 								</Button>
 							</NavigationMenuLink>
 						</NavigationMenuItem>

@@ -21,3 +21,8 @@ export function textToSlug(text: string): string {
 			.replace(/-+$/, '')
 	)
 }
+
+export function formatPrice(price: number | string): string {
+	const numPrice = typeof price === 'string' ? Number.parseFloat(price) : price
+	return numPrice.toFixed(2)
+}

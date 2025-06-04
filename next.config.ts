@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			{ hostname: 'rematazo.pe' },
 			{ hostname: 'img.clerk.com' },
+			{ hostname: 'picsum.photos' },
 		],
 	},
 }

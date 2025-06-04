@@ -12,6 +12,7 @@ import {
 	MessageCircle,
 	Microchip,
 	Mouse,
+	Settings,
 	Shield,
 	Tag,
 	Truck,
@@ -285,11 +286,11 @@ export const navOptions: NavOptionsType = {
 			description: 'Mejores descuentos y promociones',
 		},
 		{
-			name: 'Proformas',
-			url: '/proforma',
-			icon: Box,
+			name: 'Construye tu PC',
+			url: '/proformas',
+			icon: Settings,
 			category: 'tienda',
-			description: 'Cotizaciones y ensambles personalizados',
+			description: 'Arma tu PC ideal paso a paso con los mejores precios',
 		},
 		{
 			name: 'Formas de Pago',
