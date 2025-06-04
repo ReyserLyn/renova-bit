@@ -80,9 +80,14 @@ export default function QuotationBuilderPage() {
 		resetBuilder,
 		requestQuotation,
 		autoSkipEmptyComponents,
+		initializeBuilder,
 	} = useQuotationActions()
 
 	const [searchTerm, setSearchTerm] = useState('')
+
+	useEffect(() => {
+		initializeBuilder()
+	}, [initializeBuilder])
 
 	useEffect(() => {
 		setSearchTerm('')

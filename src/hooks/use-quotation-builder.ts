@@ -377,6 +377,12 @@ export const useQuotationBuilder = create<QuotationBuilderStore>()(
 					state.summary = calculateSummary(state.components)
 				})
 			},
+
+			initializeBuilder: () => {
+				set((state) => {
+					state.summary = calculateSummary(state.components)
+				})
+			},
 		})),
 		{
 			name: 'quotation-builder',
@@ -394,10 +400,21 @@ export const useQuotationBuilder = create<QuotationBuilderStore>()(
 			partialize: (state) => ({
 				currentStep: state.currentStep,
 				components: state.components,
+				summary: state.summary,
 				userInfo: state.userInfo,
 				showOnlyCompatible: state.showOnlyCompatible,
 				autoAdvanceStep: state.autoAdvanceStep,
 			}),
+			onRehydrateStorage: () => {
+				return (state, error) => {
+					if (error) {
+						console.error('Error al rehidratar el storage:', error)
+					} else if (state) {
+						// Recalcular el resumen después de cargar desde storage
+						state.summary = calculateSummary(state.components)
+					}
+				}
+			},
 		},
 	),
 )
@@ -476,6 +493,7 @@ export const useQuotationActions = () => {
 				downloadQuotation: store.downloadQuotation,
 				shareQuotation: store.shareQuotation,
 				autoSkipEmptyComponents: store.autoSkipEmptyComponents,
+				initializeBuilder: store.initializeBuilder,
 			})
 		}
 	}, [])
@@ -501,6 +519,7 @@ export const useQuotationActions = () => {
 			downloadQuotation: () => {},
 			shareQuotation: () => {},
 			autoSkipEmptyComponents: () => {},
+			initializeBuilder: () => {},
 		}
 	)
 }

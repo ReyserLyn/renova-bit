@@ -190,6 +190,7 @@ export interface QuotationBuilderActions {
 
 	// Utilidades
 	autoSkipEmptyComponents: () => void
+	initializeBuilder: () => void
 }
 
 export interface ProductForSelection {
